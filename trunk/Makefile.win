@@ -1,0 +1,42 @@
+# Project: pm_game
+# Compiler: Default GCC compiler
+# Compiler Type: MingW 3
+# Makefile created by wxDev-C++ 6.10.2 on 15.09.08 21:46
+
+CPP       = g++.exe
+CC        = gcc.exe
+WINDRES   = windres.exe
+OBJ       = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o
+LINKOBJ   = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o
+LIBS      = -L"C:/Program Files/Dev-Cpp/Lib" -mwindows -lwxmsw28 -lwxmsw28_gl -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32  
+INCS      = -I"include"
+CXXINCS   = -I"C:/Program Files/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/backward" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/mingw32" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2" -I"C:/Program Files/Dev-Cpp/include" -I"C:/Program Files/Dev-Cpp/" -I"C:/Program Files/Dev-Cpp/include/common/wx/msw" -I"C:/Program Files/Dev-Cpp/include/common/wx/generic" -I"C:/Program Files/Dev-Cpp/include/common/wx/fl" -I"C:/Program Files/Dev-Cpp/include/common/wx/gizmos" -I"C:/Program Files/Dev-Cpp/include/common/wx/html" -I"C:/Program Files/Dev-Cpp/include/common/wx/mmedia" -I"C:/Program Files/Dev-Cpp/include/common/wx/net" -I"C:/Program Files/Dev-Cpp/include/common/wx/ogl" -I"C:/Program Files/Dev-Cpp/include/common/wx/plot" -I"C:/Program Files/Dev-Cpp/include/common/wx/protocol" -I"C:/Program Files/Dev-Cpp/include/common/wx/stc" -I"C:/Program Files/Dev-Cpp/include/common/wx/svg" -I"C:/Program Files/Dev-Cpp/include/common/wx/xml" -I"C:/Program Files/Dev-Cpp/include/common/wx/xrc" -I"C:/Program Files/Dev-Cpp/include/common/wx" -I"C:/Program Files/Dev-Cpp/include/common"
+RCINCS    = --include-dir "C:/PROGRA~1/Dev-Cpp/include/common"
+BIN       = Output/MingW/pm_game.exe
+DEFINES   =  -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__
+CXXFLAGS  = $(CXXINCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
+CFLAGS    = $(INCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
+GPROF     = gprof.exe
+RM        = rm -f
+LINK      = g++.exe
+
+.PHONY: all all-before all-after clean clean-custom
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	$(RM) $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(LINK) $(LINKOBJ) -o "Output\MingW\pm_game.exe" $(LIBS)
+
+Objects/MingW/main.o: $(GLOBALDEPS) main.cc pm_app.h pm_main_frame.h main.h hook.h msgs.h
+	$(CPP) -c main.cc -o Objects/MingW/main.o $(CXXFLAGS)
+
+Objects/MingW/hook.o: $(GLOBALDEPS) hook.cc
+	$(CPP) -c hook.cc -o Objects/MingW/hook.o $(CXXFLAGS)
+
+Objects/MingW/pm_app.o: $(GLOBALDEPS) pm_app.cc pm_app.h pm_main_frame.h
+	$(CPP) -c pm_app.cc -o Objects/MingW/pm_app.o $(CXXFLAGS)
+
+Objects/MingW/pm_main_frame.o: $(GLOBALDEPS) pm_main_frame.cc pm_main_frame.h
+	$(CPP) -c pm_main_frame.cc -o Objects/MingW/pm_main_frame.o $(CXXFLAGS)
