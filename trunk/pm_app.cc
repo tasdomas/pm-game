@@ -15,7 +15,7 @@ bool PMApp::OnInit()
     PMMainFrame *frame = new PMMainFrame(
         _T("Protmusis"),
         wxPoint(50,50),
-        wxSize(450,340),
+        wxSize(200,100),
         wxCLOSE_BOX | wxSYSTEM_MENU | wxMINIMIZE_BOX
             | wxCAPTION | wxFRAME_NO_TASKBAR
             | wxRESIZE_BORDER | wxSTAY_ON_TOP);
@@ -27,7 +27,7 @@ bool PMApp::OnInit()
     HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
 
     hook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboard, hInstance, 0);
-
+    Beep(100, 200);
     return TRUE;
 }
 

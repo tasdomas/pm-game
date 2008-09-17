@@ -14,7 +14,10 @@ LRESULT CALLBACK LowLevelKeyboard(int nCode, WPARAM wParam, LPARAM lParam)
 
 
   static bool keydown=false;
-  if (nCode==HC_ACTION && p->vkCode==VK_RMENU && (wParam==WM_KEYDOWN || wParam==WM_SYSKEYDOWN))
+  if (nCode==HC_ACTION 
+    && p->vkCode==VK_F11
+    && (GetKeyState(VK_RCONTROL) & 0x8000)
+    && (wParam==WM_KEYDOWN || wParam==WM_SYSKEYDOWN))
   { keydown=true;
     //INPUT ip; ZeroMemory(&ip,sizeof(ip)); ip.type=INPUT_MOUSE; ip.mi.dwFlags=MOUSEEVENTF_RIGHTDOWN;
     //SendInput(1,&ip,sizeof(ip));
