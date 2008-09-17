@@ -9,6 +9,20 @@
 PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
 : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
 {
+    wxPanel * panel = new wxPanel(this);
+    
+    wxFlexGridSizer * sizer = new wxFlexGridSizer(2);
+    wxStaticText * text = new wxStaticText(panel, wxID_ANY, wxT("Testas"));
+    sizer->Add(text);
+    
+    text->SetBackgroundColour(wxColour(0xFF, 0, 0));
+    
+    panel->SetSizer(sizer);
+    Fit();
+
+
+    
+    
 }
 
 void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
