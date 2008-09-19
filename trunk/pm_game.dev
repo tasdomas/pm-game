@@ -1,7 +1,7 @@
 [Project]
-FileName=testting_wx\pm_game.dev
+FileName=pm_game.dev
 Name=pm_game
-UnitCount=9
+UnitCount=11
 PchHead=-1
 PchSource=-1
 Ver=3
@@ -173,4 +173,24 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit10]
+FileName=cust_event.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=cust_event.cc
+CompileCpp=1
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=	$(CPP) -c cust_event.cc -o Objects/MingW/cust_event.o $(CXXFLAGS)
 
