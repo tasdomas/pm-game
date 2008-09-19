@@ -1,7 +1,7 @@
 [Project]
 FileName=pm_game.dev
 Name=pm_game
-UnitCount=11
+UnitCount=13
 PchHead=-1
 PchSource=-1
 Ver=3
@@ -192,5 +192,25 @@ Compile=0
 Link=0
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=	$(CPP) -c cust_event.cc -o Objects/MingW/cust_event.o $(CXXFLAGS)
+BuildCmd=$(CPP) -c cust_event.cc -o Objects/MingW/cust_event.o $(CXXFLAGS)
+
+[Unit12]
+FileName=beep_thread.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=beep_thread.cc
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 
