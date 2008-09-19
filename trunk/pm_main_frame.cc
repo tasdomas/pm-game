@@ -5,13 +5,13 @@
  */
  
 #include "pm_main_frame.h"
-//#include "cust_event.h"
+#include "beep_thread.h"
 
 enum
 {
     ID_Quit = 1,
     ID_About,
-    ID_Timer
+    ID_Timer,
 };
 
 BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
@@ -185,7 +185,11 @@ void PMMainFrame::OnTimer(wxTimerEvent& event) {
     
     if (seconds >= BEEP_START) {
        if (beeps[seconds - BEEP_START]) {
-            Beep(BEEP_NOTICE, 50);
+            BeepThread * beep = new BeepThread(BEEP_NOTICE, 50);
+            if (beep->Create() == wxTHREAD_NO_ERROR) {
+                beep->Run();
+            }
+//            Beep(BEEP_NOTICE, 50);
             beeps[seconds - BEEP_START] = false;
         }
     }

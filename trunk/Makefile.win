@@ -1,13 +1,13 @@
 # Project: pm_game
 # Compiler: Default GCC compiler
 # Compiler Type: MingW 3
-# Makefile created by wxDev-C++ 6.10.2 on 19.09.08 14:22
+# Makefile created by wxDev-C++ 6.10.2 on 19.09.08 14:47
 
 CPP       = g++.exe
 CC        = gcc.exe
 WINDRES   = windres.exe
-OBJ       = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o
-LINKOBJ   = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o
+OBJ       = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o Objects/MingW/beep_thread.o
+LINKOBJ   = Objects/MingW/main.o Objects/MingW/hook.o Objects/MingW/pm_app.o Objects/MingW/pm_main_frame.o Objects/MingW/beep_thread.o
 LIBS      = -L"C:/Program Files/Dev-Cpp/Lib" -mwindows -lwxmsw28 -lwxmsw28_gl -lwxtiff -lwxjpeg -lwxpng -lwxzlib -lwxregex -lwxexpat -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lwinspool -lwinmm -lshell32 -lcomctl32 -lole32 -loleaut32 -luuid -lrpcrt4 -ladvapi32 -lwsock32 -lodbc32 -lopengl32  
 INCS      = -I"include"
 CXXINCS   = -I"C:/Program Files/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/backward" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2/mingw32" -I"C:/Program Files/Dev-Cpp/include/c++/3.4.2" -I"C:/Program Files/Dev-Cpp/include" -I"C:/Program Files/Dev-Cpp/" -I"C:/Program Files/Dev-Cpp/include/common/wx/msw" -I"C:/Program Files/Dev-Cpp/include/common/wx/generic" -I"C:/Program Files/Dev-Cpp/include/common/wx/fl" -I"C:/Program Files/Dev-Cpp/include/common/wx/gizmos" -I"C:/Program Files/Dev-Cpp/include/common/wx/html" -I"C:/Program Files/Dev-Cpp/include/common/wx/mmedia" -I"C:/Program Files/Dev-Cpp/include/common/wx/net" -I"C:/Program Files/Dev-Cpp/include/common/wx/ogl" -I"C:/Program Files/Dev-Cpp/include/common/wx/plot" -I"C:/Program Files/Dev-Cpp/include/common/wx/protocol" -I"C:/Program Files/Dev-Cpp/include/common/wx/stc" -I"C:/Program Files/Dev-Cpp/include/common/wx/svg" -I"C:/Program Files/Dev-Cpp/include/common/wx/xml" -I"C:/Program Files/Dev-Cpp/include/common/wx/xrc" -I"C:/Program Files/Dev-Cpp/include/common/wx" -I"C:/Program Files/Dev-Cpp/include/common"
@@ -38,5 +38,8 @@ Objects/MingW/hook.o: $(GLOBALDEPS) hook.cc
 Objects/MingW/pm_app.o: $(GLOBALDEPS) pm_app.cc pm_app.h pm_main_frame.h
 	$(CPP) -c pm_app.cc -o Objects/MingW/pm_app.o $(CXXFLAGS)
 
-Objects/MingW/pm_main_frame.o: $(GLOBALDEPS) pm_main_frame.cc pm_main_frame.h
+Objects/MingW/pm_main_frame.o: $(GLOBALDEPS) pm_main_frame.cc pm_main_frame.h beep_thread.h
 	$(CPP) -c pm_main_frame.cc -o Objects/MingW/pm_main_frame.o $(CXXFLAGS)
+
+Objects/MingW/beep_thread.o: $(GLOBALDEPS) beep_thread.cc beep_thread.h
+	$(CPP) -c beep_thread.cc -o Objects/MingW/beep_thread.o $(CXXFLAGS)
