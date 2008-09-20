@@ -33,11 +33,12 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     //laikmacio isvedimas
     timerDisplay = new wxStaticText(topPanel,
         wxID_ANY,
-        wxT("00:00:00"),
+        wxT("01:00:00"),
         wxDefaultPosition,
         wxDefaultSize,
         wxALIGN_CENTER);
     timerDisplay->SetFont(wxFont(font));        
+    timerDisplay->SetEventHandler(this);
     topSizer->Add(timerDisplay, 1, wxFIXED_MINSIZE | wxALIGN_CENTER);        
     
 
@@ -178,31 +179,35 @@ void PMMainFrame::OnMouseEvent(wxMouseEvent& event) {
 }
         
 void PMMainFrame::OnTimer(wxTimerEvent& event) {
-    long elapse = watch->Time();
+    long elapse = START_TIME - watch->Time();
+    
     int milliseconds = (elapse % 1000) / 10;
     int seconds = (elapse / 1000) % 60;
     int minutes = elapse / (60*1000);
     
-    if (seconds >= BEEP_START) {
-       if (beeps[seconds - BEEP_START]) {
+    if ((seconds > 0) && (seconds <= BEEP_START) && (milliseconds == 0)) {
+       if (beeps[seconds]) {
             BeepThread * beep = new BeepThread(BEEP_NOTICE, 50);
             if (beep->Create() == wxTHREAD_NO_ERROR) {
                 beep->Run();
             }
 //            Beep(BEEP_NOTICE, 50);
-            beeps[seconds - BEEP_START] = false;
+            beeps[seconds] = false;
         }
     }
         
-    if (minutes == 1) {
+    if ((minutes <= 0) && (seconds <= 0) && (milliseconds <= 0)) {
         TimerStop();
-        seconds = 0;
-        milliseconds = 0;
+        BeepThread * beep = new BeepThread(BEEP_END, 500);
+        if (beep->Create() == wxTHREAD_NO_ERROR) {
+            beep->Run();
+        }
+        
+        elapse = 0;        
     }
 
-    wxString time;
-    time.Printf("%02d:%02d:%02d", minutes, seconds, milliseconds);
-    timerDisplay->SetLabel(time);
+
+    ShowTime(elapse);
 }
 
 //timer functions
@@ -216,6 +221,7 @@ void PMMainFrame::TimerStart(bool reset) {
     if (!timer->IsRunning()) {
         timer->Start(TIMER_INTERVAL);
     }
+    ShowTime(START_TIME);
 }
 
 void PMMainFrame::TimerStop() {
@@ -230,4 +236,17 @@ void PMMainFrame::TimerStop() {
 
 void PMMainFrame::TimerPause() {
     timer->Stop();
+}
+
+void PMMainFrame::ShowTime(long timeMs) {
+    
+    int milliseconds = (timeMs % 1000) / 10;
+    int seconds = (timeMs / 1000) % 60;
+    int minutes = timeMs / (60*1000);
+    
+    wxString time;
+    time.Printf("%02d:%02d:%02d", minutes, seconds, milliseconds);
+    timerDisplay->SetLabel(time);
+    
+    
 }

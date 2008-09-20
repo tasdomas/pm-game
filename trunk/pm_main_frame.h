@@ -5,8 +5,10 @@
 
 #define MAX_TEAMS 4
 #define BEEP_NOTICE 500
+#define BEEP_END 350
 #define TIMER_INTERVAL 10
-#define BEEP_START 55 
+#define BEEP_START 5 
+#define START_TIME 60*1000
 
 struct ui_row {
     wxPanel * panel;
@@ -46,6 +48,8 @@ public:
     void TimerStart(bool reset = true);
     void TimerStop();
     void TimerPause();
+    
+    void ShowTime(long timeMs);
 
     DECLARE_EVENT_TABLE()
 };
