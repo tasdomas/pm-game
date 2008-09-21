@@ -175,26 +175,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit10]
-FileName=cust_event.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit11]
-FileName=cust_event.cc
-CompileCpp=1
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CPP) -c cust_event.cc -o Objects/MingW/cust_event.o $(CXXFLAGS)
-
-[Unit12]
 FileName=beep_thread.h
 CompileCpp=1
 Folder=
@@ -204,7 +184,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit13]
+[Unit11]
 FileName=beep_thread.cc
 CompileCpp=1
 Folder=
@@ -213,4 +193,24 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit12]
+FileName=pm_settings_frame.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit13]
+FileName=pm_settings_frame.cc
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=	$(CPP) -c pm_settings_frame.cc -o Objects/MingW/pm_settings_frame.o $(CXXFLAGS)
 
