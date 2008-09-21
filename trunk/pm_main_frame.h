@@ -10,10 +10,12 @@
 #define BEEP_START 5 
 #define START_TIME 60*1000
 
+/* vienos komandos irasai */
 struct ui_row {
     wxPanel * panel;
-    wxStaticText * name;
-    wxStaticText * points;
+    wxStaticText * nameDisplay;
+    wxStaticText * pointsDisplay;
+    wxString title;
 };
 
 class PMMainFrame: public wxFrame
@@ -21,6 +23,7 @@ class PMMainFrame: public wxFrame
 private:
     ui_row rows[MAX_TEAMS]; //main_frame interface elements
     int teamCount; //rodomu komandu sk.
+    
     wxBoxSizer * topSizer;
     wxStaticText * timerDisplay;
     wxTimer * timer;
@@ -48,6 +51,8 @@ public:
     void TimerStart(bool reset = true);
     void TimerStop();
     void TimerPause();
+    
+    void EditSettings();
     
     void ShowTime(long timeMs);
 

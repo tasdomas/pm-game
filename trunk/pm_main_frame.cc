@@ -6,6 +6,7 @@
  
 #include "pm_main_frame.h"
 #include "beep_thread.h"
+#include "pm_settings_frame.h"
 
 enum
 {
@@ -48,26 +49,26 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
         wxBoxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
         rows[i].panel = panel;
 
-        rows[i].name = new wxStaticText(panel, 
+        rows[i].nameDisplay = new wxStaticText(panel, 
             wxID_ANY, 
-            wxT("Komanda"),
+            wxString("Komanda"),
             wxDefaultPosition,
             wxDefaultSize,
             wxALIGN_LEFT);
-        rows[i].name->SetFont(wxFont(font));
-        rows[i].name->SetEventHandler(this);        
+        rows[i].nameDisplay->SetFont(wxFont(font));
+        rows[i].nameDisplay->SetEventHandler(this);        
 
-        rows[i].points = new wxStaticText(panel, 
+        rows[i].pointsDisplay = new wxStaticText(panel, 
             wxID_ANY, 
             wxT("0"),
             wxDefaultPosition,
             wxDefaultSize,
             wxALIGN_RIGHT);
-        rows[i].points->SetFont(wxFont(font));        
-        rows[i].points->SetEventHandler(this);
+        rows[i].pointsDisplay->SetFont(wxFont(font));        
+        rows[i].pointsDisplay->SetEventHandler(this);
 
-        sizer->Add(rows[i].name, 9, wxEXPAND | wxALIGN_LEFT);
-        sizer->Add(rows[i].points, 1, wxEXPAND | wxALIGN_RIGHT);
+        sizer->Add(rows[i].nameDisplay, 9, wxEXPAND | wxALIGN_LEFT);
+        sizer->Add(rows[i].pointsDisplay, 1, wxEXPAND | wxALIGN_RIGHT);
         
         panel->SetSizer(sizer);
 
@@ -85,12 +86,14 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     //laikmatis
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
+    
+    EditSettings();
 }
 
 void PMMainFrame::SetColour(int pos, wxColour colour) {
     if ((pos > 0) && (pos <= MAX_TEAMS)) {
-        rows[pos].name->SetBackgroundColour(colour);
-        rows[pos].points->SetBackgroundColour(colour);        
+        rows[pos].nameDisplay->SetBackgroundColour(colour);
+        rows[pos].pointsDisplay->SetBackgroundColour(colour);        
         this->Refresh();
     }    
 }
@@ -247,6 +250,9 @@ void PMMainFrame::ShowTime(long timeMs) {
     wxString time;
     time.Printf("%02d:%02d:%02d", minutes, seconds, milliseconds);
     timerDisplay->SetLabel(time);
-    
-    
+}
+
+void PMMainFrame::EditSettings() {
+    PMSettings dialog(this);
+    dialog.ShowModal();
 }
