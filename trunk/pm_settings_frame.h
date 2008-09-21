@@ -10,15 +10,26 @@
 class PMSettings : public wxDialog {
 private:
     int teamCount;
-    wxString teams[MAX_TEAMS];
     wxTextCtrl * teamsDisplay[MAX_TEAMS];
     wxSizer * topSizer;
+    wxSpinCtrl * countDisplay;
     
 public:
     PMSettings(wxWindow * parent, wxWindowID = wxID_ANY);  
     void CreateControls();
-    void SetCount(int count);
+    
+    //events
     void OnCountChange(wxSpinEvent & event);
+    void OnCancel(wxCommandEvent & event);
+    void OnOk(wxCommandEvent & event);
+    
+    //setters & getters
+    void SetCount(int count, bool set = false);    
+    int GetCount();
+    
+    void SetName(int pos, wxString & label);
+    wxString GetName(int pos);
+    
     
     DECLARE_EVENT_TABLE()
 };

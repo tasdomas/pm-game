@@ -7,6 +7,7 @@
 #include "pm_main_frame.h"
 #include "beep_thread.h"
 #include "pm_settings_frame.h"
+#include "msgs.h"
 
 enum
 {
@@ -20,6 +21,9 @@ BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
     EVT_CUSTOM(WM_USER+1, 0, PMMainFrame::OnTest)
     EVT_MOUSE_EVENTS(PMMainFrame::OnMouseEvent)
     EVT_TIMER(ID_Timer, PMMainFrame::OnTimer)
+    
+    //settings dialog
+    EVT_CHAR(PMMainFrame::OnKey)
 END_EVENT_TABLE()
 
 PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
@@ -86,8 +90,7 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     //laikmatis
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
-    
-    EditSettings();
+
 }
 
 void PMMainFrame::SetColour(int pos, wxColour colour) {
@@ -107,7 +110,7 @@ void PMMainFrame::SetTeams (int count) {
                 topSizer->Show(i, false);
             }
         } else if (teamCount < count) { //add teams
-            for (int i = teamCount; i < count; i++) {
+            for (int i = teamCount; i <= count; i++) {
                 topSizer->Show(i, true);
             }
         }
@@ -133,6 +136,16 @@ void PMMainFrame::OnTest(wxEvent& WXUNUSED(event))
 WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
 {
     WXLRESULT rc = 0;
+    switch (message) {
+        case MSG_SETTINGS:
+            EditSettings();
+            break;
+        
+        default:
+        rc = wxFrame::MSWWindowProc(message, wParam, lParam);
+    }
+        
+    /*
     if (message == WM_USER + 1) {
         wxMessageBox("ok");
 //        this->SetColour(1, wxColour(0xff, 0, 0));        
@@ -143,8 +156,8 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
         }
     } else {
 //    if ( !processed )
-        rc = wxFrame::MSWWindowProc(message, wParam, lParam);
-    }
+    */
+    
 
     return rc;
 }
@@ -254,5 +267,23 @@ void PMMainFrame::ShowTime(long timeMs) {
 
 void PMMainFrame::EditSettings() {
     PMSettings dialog(this);
-    dialog.ShowModal();
+    
+    dialog.SetCount(teamCount, true);
+    
+    if (dialog.ShowModal() == wxID_OK) {
+        SetTeams(dialog.GetCount());
+    }
+        
+}
+
+void PMMainFrame::OnKey(wxKeyEvent & event) {
+    int code = event.GetKeyCode();
+    switch(code) {
+        case ((int)'s'):
+            EditSettings();
+            break;
+        default: 
+            event.Skip(false);
+            break;
+    }
 }

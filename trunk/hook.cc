@@ -1,5 +1,6 @@
 #define _WIN32_WINNT 0x0500
 #include <windows.h>
+#include "msgs.h"
 
 extern HWND window;
 
@@ -14,15 +15,18 @@ LRESULT CALLBACK LowLevelKeyboard(int nCode, WPARAM wParam, LPARAM lParam)
 
 
   static bool keydown=false;
-  if (nCode==HC_ACTION 
-    && p->vkCode==VK_F11
+  if (nCode==HC_ACTION
     //&& (GetKeyState(VK_RCONTROL) & 0x8000)
     && (wParam==WM_KEYDOWN || wParam==WM_SYSKEYDOWN))
-  { keydown=true;
-    //INPUT ip; ZeroMemory(&ip,sizeof(ip)); ip.type=INPUT_MOUSE; ip.mi.dwFlags=MOUSEEVENTF_RIGHTDOWN;
-    //SendInput(1,&ip,sizeof(ip));
-    PostMessage(window, WM_USER+1, 0, 0);
-    return 1;
+  { 
+    switch(p->vkCode) {
+        case VK_F11:
+            PostMessage(window, WM_USER, 0, 0);
+            return 1;
+            break;
+    }
+            
+
   }
   /*
   if (nCode==HC_ACTION && p->vkCode==VK_RMENU && (wParam==WM_KEYUP || wParam==WM_SYSKEYUP) && keydown)
