@@ -55,6 +55,9 @@ public:
     void EditSettings();
     
     void ShowTime(long timeMs);
+    
+    //event handlers
+    void OnKey(wxKeyEvent & event);
 
     DECLARE_EVENT_TABLE()
 };
