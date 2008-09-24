@@ -31,6 +31,7 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
 {
 
     dragMode = 0;
+    resetOnStart = false;
     wxPanel * topPanel = new wxPanel(this);
     topSizer = new wxBoxSizer(wxVERTICAL);
     wxFont font(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);    
@@ -94,11 +95,19 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
 }
 
 void PMMainFrame::SetColour(int pos, wxColour colour) {
-    if ((pos > 0) && (pos <= MAX_TEAMS)) {
+    if ((pos >= 0) && (pos < MAX_TEAMS)) {
         rows[pos].nameDisplay->SetBackgroundColour(colour);
         rows[pos].pointsDisplay->SetBackgroundColour(colour);        
         this->Refresh();
     }    
+}
+
+void PMMainFrame::SetTeam(int pos, wxString & name) {
+    if ((pos >= 0) && (pos < MAX_TEAMS)) {
+        rows[pos].nameDisplay->SetLabel(name);
+    }
+    topSizer->Layout();
+    topSizer->Fit(this);
 }
 
 void PMMainFrame::SetTeams (int count) {
@@ -137,10 +146,15 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
 {
     WXLRESULT rc = 0;
     switch (message) {
-        case MSG_SETTINGS:
-            EditSettings();
+        case MSG_START:
+            StartGame();
             break;
-        
+        case MSG_PAUSE :
+            PauseGame();
+            break;
+        case MSG_RESET:
+            ResetGame();
+            break;
         default:
         rc = wxFrame::MSWWindowProc(message, wParam, lParam);
     }
@@ -237,7 +251,7 @@ void PMMainFrame::TimerStart(bool reset) {
     if (!timer->IsRunning()) {
         timer->Start(TIMER_INTERVAL);
     }
-    ShowTime(START_TIME);
+
 }
 
 void PMMainFrame::TimerStop() {
@@ -269,17 +283,25 @@ void PMMainFrame::EditSettings() {
     PMSettings dialog(this);
     
     dialog.SetCount(teamCount, true);
+    for (int i = 0; i < teamCount; i++) {
+        wxString name = rows[i].nameDisplay->GetLabel();
+        dialog.SetName(i, name);
+    }
     
     if (dialog.ShowModal() == wxID_OK) {
         SetTeams(dialog.GetCount());
+        for (int i=0; i < teamCount; i++) {
+            wxString label = dialog.GetName(i);
+            SetTeam(i, label);
+        }
+            
     }
-        
 }
 
 void PMMainFrame::OnKey(wxKeyEvent & event) {
     int code = event.GetKeyCode();
     switch(code) {
-        case ((int)'s'):
+        case ((int)'g'):
             EditSettings();
             break;
         default: 
@@ -287,3 +309,21 @@ void PMMainFrame::OnKey(wxKeyEvent & event) {
             break;
     }
 }
+
+void PMMainFrame::StartGame() {
+    //TODO: random beep
+    
+    TimerStart(resetOnStart);
+    resetOnStart = false;
+}
+
+void PMMainFrame::PauseGame() {
+    TimerPause();
+}
+
+void PMMainFrame::ResetGame() {
+    TimerStop();
+    ShowTime(START_TIME);
+    resetOnStart = true;
+}
+

@@ -24,6 +24,8 @@ private:
     ui_row rows[MAX_TEAMS]; //main_frame interface elements
     int teamCount; //rodomu komandu sk.
     
+    bool resetOnStart; 
+    
     wxBoxSizer * topSizer;
     wxStaticText * timerDisplay;
     wxTimer * timer;
@@ -53,6 +55,13 @@ public:
     void TimerPause();
     
     void EditSettings();
+    
+    //game control
+    void StartGame();
+    void PauseGame();
+    void ResetGame();
+    
+    void SetTeam(int pos, wxString & name);
     
     void ShowTime(long timeMs);
     
