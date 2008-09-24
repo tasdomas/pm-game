@@ -11,21 +11,45 @@ extern HWND window;
 LRESULT CALLBACK LowLevelKeyboard(int nCode, WPARAM wParam, LPARAM lParam)
 { PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
   //
-
-
-
-  static bool keydown=false;
-  if (nCode==HC_ACTION
+if (nCode==HC_ACTION
     //&& (GetKeyState(VK_RCONTROL) & 0x8000)
     && (wParam==WM_KEYDOWN || wParam==WM_SYSKEYDOWN))
   { 
-    switch(p->vkCode) {
-        case VK_F11:
-            PostMessage(window, WM_USER, 0, 0);
-            return 1;
-            break;
-    }
+        
+    BYTE ks[256];
+    GetKeyboardState(ks);
+
+    WORD w =  0;
+    //UINT scan=0;
+    ToAscii(p->vkCode,p->scanCode,ks,&w,0);
+    if (w > 0) {
+        char ch = char(w); 
+           
+        switch (ch) {
+            case KEY_START:
+                PostMessage(window, MSG_START, 0, 0);
+                return 1;
+                break;
+            case KEY_PAUSE:
+                PostMessage(window, MSG_PAUSE, 0, 0);
+                return 1;
+                break;
+            case KEY_RESET:
+                PostMessage(window, MSG_RESET, 0, 0);
+                return 1;
+                break;
+        }
+    } else {
+        
+        switch(p->vkCode) {
+    
             
+            case VK_F11:
+                PostMessage(window, WM_USER, 0, 0);
+                return 1;
+                break;
+        }
+    }            
 
   }
   /*

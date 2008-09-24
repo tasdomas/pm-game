@@ -102,13 +102,13 @@ int PMSettings::GetCount() {
 }
 
 void PMSettings::SetName(int pos, wxString & label) {
-    if ((pos > 0) && (pos < MAX_TEAMS)) {
+    if ((pos >= 0) && (pos < MAX_TEAMS)) {
         teamsDisplay[pos]->SetValue(label);
     }
 }
     
 wxString PMSettings::GetName(int pos) {
-    if ((pos > 0) && (pos < teamCount)) {
+    if ((pos >= 0) && (pos < teamCount)) {
         return teamsDisplay[pos]->GetValue();
     }
     return wxT("");
