@@ -5,10 +5,15 @@
 
 #define MAX_TEAMS 4
 #define BEEP_NOTICE 500
+#define BEEP_GAMESTART 600
 #define BEEP_END 350
 #define TIMER_INTERVAL 10
 #define BEEP_START 5 
 #define START_TIME 60*1000
+
+#define BEEP_RANDOM true
+#define BEEP_MIN 600
+#define BEEP_MAX 2000
 
 /* vienos komandos irasai */
 struct ui_row {
@@ -23,6 +28,10 @@ class PMMainFrame: public wxFrame
 private:
     ui_row rows[MAX_TEAMS]; //main_frame interface elements
     int teamCount; //rodomu komandu sk.
+    
+    bool beepRandom;
+    int beepStart;
+    int beepEnd;
     
     bool resetOnStart; 
     
@@ -39,6 +48,7 @@ private:
 public:
 
     PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style);
+    void CreateControls();
 
     void OnQuit(wxCommandEvent& event);
     void OnTest(wxEvent& event);

@@ -9,6 +9,10 @@
 #include "pm_settings_frame.h"
 #include "msgs.h"
 
+#include <cstdlib> 
+#include <ctime> 
+
+
 enum
 {
     ID_Quit = 1,
@@ -30,12 +34,30 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
 : wxFrame((wxFrame *)NULL, -1, title, pos, size, style)
 {
 
+    CreateControls();
+    
+    //parametrai
     dragMode = 0;
-    resetOnStart = false;
+    resetOnStart = true;
+    beepRandom = BEEP_RANDOM;
+    beepStart = BEEP_MIN;
+    beepEnd = BEEP_MAX;
+    
+    teamCount = MAX_TEAMS;
+    
+    srand((unsigned)time(0)); 
+   
+    //laikmatis
+    timer = new wxTimer(this, ID_Timer);
+    watch = new wxStopWatch();
+
+}
+
+void PMMainFrame::CreateControls() {
     wxPanel * topPanel = new wxPanel(this);
     topSizer = new wxBoxSizer(wxVERTICAL);
-    wxFont font(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);    
-    
+    wxFont font(18, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+
     //laikmacio isvedimas
     timerDisplay = new wxStaticText(topPanel,
         wxID_ANY,
@@ -43,10 +65,10 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
         wxDefaultPosition,
         wxDefaultSize,
         wxALIGN_CENTER);
-    timerDisplay->SetFont(wxFont(font));        
+    timerDisplay->SetFont(wxFont(font));
     timerDisplay->SetEventHandler(this);
-    topSizer->Add(timerDisplay, 1, wxFIXED_MINSIZE | wxALIGN_CENTER);        
-    
+    topSizer->Add(timerDisplay, 1, wxFIXED_MINSIZE | wxALIGN_CENTER);
+
 
     for (int i = 0; i < MAX_TEAMS; i++) {
         wxPanel * panel = new wxPanel(topPanel);
@@ -54,27 +76,27 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
         wxBoxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
         rows[i].panel = panel;
 
-        rows[i].nameDisplay = new wxStaticText(panel, 
-            wxID_ANY, 
+        rows[i].nameDisplay = new wxStaticText(panel,
+            wxID_ANY,
             wxString("Komanda"),
             wxDefaultPosition,
             wxDefaultSize,
             wxALIGN_LEFT);
         rows[i].nameDisplay->SetFont(wxFont(font));
-        rows[i].nameDisplay->SetEventHandler(this);        
+        rows[i].nameDisplay->SetEventHandler(this);
 
-        rows[i].pointsDisplay = new wxStaticText(panel, 
-            wxID_ANY, 
+        rows[i].pointsDisplay = new wxStaticText(panel,
+            wxID_ANY,
             wxT("0"),
             wxDefaultPosition,
             wxDefaultSize,
             wxALIGN_RIGHT);
-        rows[i].pointsDisplay->SetFont(wxFont(font));        
+        rows[i].pointsDisplay->SetFont(wxFont(font));
         rows[i].pointsDisplay->SetEventHandler(this);
 
         sizer->Add(rows[i].nameDisplay, 9, wxEXPAND | wxALIGN_LEFT);
         sizer->Add(rows[i].pointsDisplay, 1, wxEXPAND | wxALIGN_RIGHT);
-        
+
         panel->SetSizer(sizer);
 
         topSizer->Add(panel, 1, wxEXPAND);
@@ -83,15 +105,8 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     topPanel->SetSizer(topSizer);
     topSizer->Fit(this);
     topSizer->Layout();
-    
-    this->SetTransparent(200);
-    
-    teamCount = MAX_TEAMS;
-    
-    //laikmatis
-    timer = new wxTimer(this, ID_Timer);
-    watch = new wxStopWatch();
 
+    this->SetTransparent(200);
 }
 
 void PMMainFrame::SetColour(int pos, wxColour colour) {
@@ -288,14 +303,19 @@ void PMMainFrame::EditSettings() {
         dialog.SetName(i, name);
     }
     
+    dialog.SetRandom(beepRandom);
+    dialog.SetBeepLimits(beepStart, beepEnd);
+    
     if (dialog.ShowModal() == wxID_OK) {
         SetTeams(dialog.GetCount());
         for (int i=0; i < teamCount; i++) {
             wxString label = dialog.GetName(i);
             SetTeam(i, label);
         }
-            
     }
+    
+    beepRandom = dialog.GetRandom();
+    dialog.GetBeepLimits(beepStart, beepEnd);
 }
 
 void PMMainFrame::OnKey(wxKeyEvent & event) {
@@ -312,6 +332,17 @@ void PMMainFrame::OnKey(wxKeyEvent & event) {
 
 void PMMainFrame::StartGame() {
     //TODO: random beep
+    
+    if (resetOnStart) { //naujas raundas
+        int beep = beepStart;
+        if (beepRandom) {
+            int diff = beepEnd - beepStart;
+            double random = (double)rand() / RAND_MAX; 
+            beep = beepStart + (int)(diff * random);
+        }
+            
+        Beep(BEEP_GAMESTART, beep);
+    }
     
     TimerStart(resetOnStart);
     resetOnStart = false;

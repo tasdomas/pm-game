@@ -1,10 +1,12 @@
 #include "pm_settings_frame.h"
 #include "wx/spinctrl.h"
 #include "wx/textctrl.h"
+#include "wx/checkbox.h"
 
 enum
 {
     ID_Spin = 1,
+    ID_Random,
     ID_Cancel,
     ID_Ok,
 };
@@ -14,6 +16,7 @@ BEGIN_EVENT_TABLE(PMSettings, wxDialog)
     EVT_SPIN_DOWN(ID_Spin, PMSettings::OnCountChange)
     EVT_BUTTON(ID_Cancel, PMSettings::OnCancel)
     EVT_BUTTON(ID_Ok, PMSettings::OnOk)
+    EVT_CHECKBOX(ID_Random, PMSettings::OnRandomChange)
 END_EVENT_TABLE()
 
 PMSettings::PMSettings(wxWindow * parent, wxWindowID)
@@ -52,14 +55,43 @@ void PMSettings::CreateControls() {
     sizer = new wxBoxSizer(wxHORIZONTAL);
     panel->SetSizer(sizer);
     
+    topSizer->Add(panel);
+    
+    panel = new wxPanel(topPanel);
+    sizer = new wxBoxSizer(wxVERTICAL);
+    panel->SetSizer(sizer);
+    
+    beepRandom = new wxCheckBox(panel, ID_Random, wxT("Atsitiktinis signalas"));
+    sizer->Add(beepRandom);
+    
+    topSizer->Add(panel);
+    
+    wxPanel * pp = new wxPanel(panel);
+    wxBoxSizer * sz = new wxBoxSizer(wxHORIZONTAL);
+    pp->SetSizer(sz);
+    
+    beepIntStart = new wxTextCtrl(pp, wxID_ANY, wxString::Format("%d", BEEP_MIN));
+    sz->Add(beepIntStart);
+    wxStaticText * label = new wxStaticText(pp, wxID_ANY, wxT("-"));
+    sz->Add(label);
+    beepIntEnd = new wxTextCtrl(pp, wxID_ANY, wxString::Format("%d", BEEP_MAX));
+    sz->Add(beepIntEnd);
+    label = new wxStaticText(pp, wxID_ANY, wxT(" (ms)"));
+    sz->Add(label);   
+    
+    sizer->Add(pp);    
+
+    //OK & Cancel
+    panel = new wxPanel(topPanel);
+    sizer = new wxBoxSizer(wxHORIZONTAL);
+    panel->SetSizer(sizer);
+
     wxButton * btnCancel = new wxButton(panel, ID_Cancel, _T("Atsaukti"));
     sizer->Add(btnCancel, 1, wxEXPAND | wxALIGN_LEFT);
 
     wxButton * btnOk = new wxButton(panel, ID_Ok, _T("Saugoti"));
     sizer->Add(btnOk, 1, wxEXPAND | wxALIGN_RIGHT);
-    
     topSizer->Add(panel);
-    
     
     topSizer->Fit(this);
     topSizer->Layout();
@@ -131,3 +163,41 @@ void PMSettings::OnCancel(wxCommandEvent & event) {
         this->Show(false);
     }
 }    
+
+void PMSettings::OnRandomChange(wxCommandEvent & event) {
+    UpdateRandom();
+}
+
+//ijungia/isjungia signalo intervalo laukus pagal
+//tai, ar signalas atsitiktinio ilgio
+void PMSettings::UpdateRandom() {
+    if (beepRandom->GetValue()) {
+        beepIntEnd->Enable();
+    } else {
+        beepIntEnd->Disable();
+    }
+}    
+
+bool PMSettings::GetRandom() {
+    return beepRandom->GetValue();
+}
+
+void PMSettings::SetRandom(bool value) {
+    beepRandom->SetValue(value);
+    UpdateRandom();
+}
+
+void PMSettings::GetBeepLimits(int& min, int& max) {
+    long s;
+    (beepIntStart->GetValue()).ToLong(&s);
+    min = (int)s;
+
+    (beepIntEnd->GetValue()).ToLong(&s);
+    max = (int)s;
+}
+    
+void PMSettings::SetBeepLimits(int min, int max) {
+    beepIntStart->SetValue(wxString::Format("%d", min));
+    beepIntEnd->SetValue(wxString::Format("%d", max));
+}
+
