@@ -31,6 +31,8 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
 
     CreateControls();
     
+    defaultBackground = rows[0].panel->GetBackgroundColour();
+    
     //parametrai
     dragMode = 0;
     resetOnStart = true;
@@ -168,13 +170,9 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
             ResetGame();
             break;
         case MSG_GAMEKEY:
-//            if (wParam & KS_LSHIFT) {
-            if (state == STATE_BEEPING) {
-                wxMessageBox("falsstartas");
-            } else if (state == STATE_RUNNING) {
-                wxMessageBox("ok");
+            if (state != STATE_NOT_RUNNING) {
+                ProcessGameKey(wParam, lParam);
             }
-//            }
             break;
         default:
         rc = wxFrame::MSWWindowProc(message, wParam, lParam);
@@ -195,6 +193,90 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
     
 
     return rc;
+}
+
+void PMMainFrame::ProcessGameKey(long team, long alt) {
+    
+    if ((alt == 0) && (rows[team].state == TEAM_WAITING)) {
+        if (state == STATE_RUNNING) {
+            SetTeamState(team, TEAM_ANSWERING);
+            PauseGame();
+        } else if (state == STATE_BEEPING) {
+            SetTeamState(team, TEAM_BLOCKED);            
+        }
+        UpdateTeams();
+        
+    } else if (alt != 0) { //lygiosios
+        int newState = TEAM_DRAW;
+        if (state == STATE_BEEPING) {
+            newState = TEAM_BLOCKED;
+        }
+        if (alt & KS_LSHIFT) {
+            switch (team) {
+                case 0:
+                    SetTeamState(2, newState);
+                    SetTeamState(1, newState);
+                    break;
+                case 1:
+                    SetTeamState(2, newState);
+                    SetTeamState(0, newState);
+                    break;
+                case 2:
+                    SetTeamState(0, newState);
+                    SetTeamState(1, newState);
+                    break;
+                case 3:
+                    SetTeamState(2, newState);
+                    SetTeamState(3, newState);
+                    break;
+            }
+        } else if (alt & KS_LALT) {
+            switch(team) {
+                case 0:
+                    SetTeamState(3, newState);
+                    SetTeamState(1, newState);
+                    break;
+                case 1:
+                    SetTeamState(3, newState);
+                    SetTeamState(0, newState);
+                    break;
+                case 2:
+                    SetTeamState(0, newState);
+                    SetTeamState(1, newState);
+                    SetTeamState(2, newState);
+                    SetTeamState(3, newState);
+                    break;
+            }
+        } else if (alt & KS_LCTRL) {
+            switch(team) {
+                case 0:
+                    SetTeamState(1, newState);
+                    SetTeamState(2, newState);
+                    SetTeamState(3, newState);                    
+                    break;
+                case 1:
+                    SetTeamState(3, newState);
+                    SetTeamState(2, newState);
+                    SetTeamState(0, newState);
+                    break;
+                case 2:
+                    SetTeamState(3, newState);
+                    SetTeamState(1, newState);
+                    SetTeamState(0, newState);
+                    break;
+                case 3:
+                    SetTeamState(2, newState);
+                    SetTeamState(1, newState);
+                    SetTeamState(0, newState);
+                    break;
+            }
+        }
+        if (newState == TEAM_DRAW) {
+            PauseGame();
+        }
+    }
+    UpdateTeams();
+
 }
 
 //mouse event handling
@@ -256,6 +338,7 @@ void PMMainFrame::OnTimer(wxTimerEvent& event) {
         if (beep->Create() == wxTHREAD_NO_ERROR) {
             beep->Run();
         }
+        ResetGame();
         
         elapse = 0;        
     }
@@ -340,38 +423,81 @@ void PMMainFrame::OnKey(wxKeyEvent & event) {
 }
 
 void PMMainFrame::StartGame() {
-    //TODO: random beep
-    
-    if (resetOnStart) { //naujas raundas
-        int beep = beepStart;
-        if (beepRandom) {
-            int diff = beepEnd - beepStart;
-            double random = (double)rand() / RAND_MAX; 
-            beep = beepStart + (int)(diff * random);
+    if (resetOnStart) {
+        for (int i = 0; i < teamCount; i++) {
+            SetTeamState(i, TEAM_WAITING);
         }
+    }
+    for (int i = 0; i < teamCount; i++) {
+        if (rows[i].state == TEAM_DRAW) {
+            rows[i].state = TEAM_WAITING;
+        }
+    }
+    UpdateTeams();
+    
+    int beep = beepStart;
+    if (beepRandom) {
+        int diff = beepEnd - beepStart;
+        double random = (double)rand() / RAND_MAX; 
+        beep = beepStart + (int)(diff * random);
+    }
+    
 
-        BeepThread * beepT = new BeepThread(BEEP_GAMESTART, beep, &state, this);
-        if (beepT->Create() == wxTHREAD_NO_ERROR) {
-            beepT->Run();
-        }
-    } else {
-    
-        TimerStart(resetOnStart);
-        resetOnStart = false;
+    BeepThread * beepT = new BeepThread(BEEP_GAMESTART, beep, &state, this);
+    if (beepT->Create() == wxTHREAD_NO_ERROR) {
+        beepT->Run();
     }
 }
 
 void PMMainFrame::PauseGame() {
     TimerPause();
+    state = STATE_NOT_RUNNING;
 }
 
 void PMMainFrame::ResetGame() {
     TimerStop();
     ShowTime(START_TIME);
     resetOnStart = true;
+    //komandu bukles i pradzia
+    for (int i = 0; i < teamCount; i++) {
+        rows[i].state = TEAM_WAITING;
+    }
+    UpdateTeams();
+    state = STATE_NOT_RUNNING;
 }
 
 void PMMainFrame::OnBeeper(wxEvent & event) {
     TimerStart(resetOnStart);
     resetOnStart = false;
+    
+}
+
+void PMMainFrame::UpdateTeams() {
+    for (int i = 0; i < teamCount; i++) {
+        switch (rows[i].state) {
+            case TEAM_WAITING:
+                rows[i].panel->SetBackgroundColour(defaultBackground);
+                break;
+            case TEAM_ANSWERING:
+                rows[i].panel->SetBackgroundColour(wxColour(0, 0xaa, 0));
+                break;
+            case TEAM_BLOCKED:
+                rows[i].panel->SetBackgroundColour(wxColour(0xaa, 0, 0));
+                break;
+            case TEAM_DRAW:
+                rows[i].panel->SetBackgroundColour(wxColour(0xaa, 0xaa, 0));
+                break;
+                
+        }
+    }
+    this->Refresh();
+}
+  
+void PMMainFrame::SetTeamState(int pos, int newState) {
+    if ((pos >= 0) && (pos < MAX_TEAMS)) {
+        if ((rows[pos].state == TEAM_WAITING) || (newState == TEAM_WAITING)) {
+            rows[pos].state = newState;
+        }
+    }
+    this->Refresh();
 }

@@ -4,16 +4,34 @@
 #include "wx/wx.h" 
 
 #define MAX_TEAMS 4
+
+/****************
+ garsinis signalas
+*****************/
+//paskutiniu sekundziu signalu daznis 
 #define BEEP_NOTICE 500
+//pradinio signalo daznis
 #define BEEP_GAMESTART 600
+//pabaigos signalo daznis
 #define BEEP_END 350
+//kas kiek laiko atnaujinamas laikmatis (ms)
 #define TIMER_INTERVAL 10
+//kiek sekundziu likus iki pabaigos pradedama signalizuoti
 #define BEEP_START 5 
+//pradinis laikas (1 min)
 #define START_TIME 60*1000
 
 #define BEEP_RANDOM true
+//minimali signalo trukme
 #define BEEP_MIN 600
+//maksimali signalo trukme
 #define BEEP_MAX 2000
+
+//komandu busenos
+#define TEAM_WAITING 0
+#define TEAM_ANSWERING 1
+#define TEAM_BLOCKED 2
+#define TEAM_DRAW 3
 
 enum
 {
@@ -32,6 +50,7 @@ struct ui_row {
     wxPanel * panel;
     wxStaticText * nameDisplay;
     wxStaticText * pointsDisplay;
+    int state;
 };
 
 class PMMainFrame: public wxFrame
@@ -57,6 +76,8 @@ private:
     int dragMode;
     long msCount;
     bool beeps[5];
+    
+    wxColour defaultBackground;
         
 public:
 
@@ -70,8 +91,11 @@ public:
     void OnBeeper(wxEvent & event);
     virtual WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     
+    void ProcessGameKey(long team, long alt);
+    
     void SetTeams(int count);
     void SetColour(int pos, wxColour colour);
+    void SetTeamState(int pos, int newState);
     
     //timer control
     void TimerStart(bool reset = true);
@@ -88,6 +112,7 @@ public:
     void SetTeam(int pos, wxString & name);
     
     void ShowTime(long timeMs);
+    void UpdateTeams();
     
     //event handlers
     void OnKey(wxKeyEvent & event);
