@@ -21,6 +21,7 @@ if (nCode==HC_ACTION
 
     WORD w =  0;
     //UINT scan=0;
+    // apdorojam paprastus klavisus
     ToAscii(p->vkCode,p->scanCode,ks,&w,0);
     if (w > 0) {
         char ch = char(w); 
@@ -42,10 +43,21 @@ if (nCode==HC_ACTION
     } else {
         
         switch(p->vkCode) {
-    
-            
+            case VK_F9:
+            case VK_F10:
             case VK_F11:
-                PostMessage(window, WM_USER, 0, 0);
+            case VK_F12:    
+                long flag = 0;
+                if (GetKeyState(VK_LCONTROL) & 0x8000) {
+                    flag = flag | KS_LCTRL;
+                }
+                if (GetKeyState(VK_LSHIFT) & 0x8000) {
+                    flag = flag | KS_LSHIFT;
+                }
+                if (GetKeyState(VK_LMENU) & 0x8000) {
+                    flag = flag | KS_LALT;
+                }
+                PostMessage(window, MSG_GAMEKEY, flag, 0);
                 return 1;
                 break;
         }
