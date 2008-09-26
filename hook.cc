@@ -47,6 +47,16 @@ if (nCode==HC_ACTION
             case VK_F10:
             case VK_F11:
             case VK_F12:    
+                long team = 0;
+                if (p->vkCode == VK_F9) {
+                    team = 0;
+                } else if (p->vkCode == VK_F10) {
+                    team = 1;
+                } else if (p->vkCode == VK_F11) {
+                    team = 2;
+                } else if (p->vkCode == VK_F12) {
+                    team = 3;
+                };
                 long flag = 0;
                 if (GetKeyState(VK_LCONTROL) & 0x8000) {
                     flag = flag | KS_LCTRL;
@@ -57,7 +67,7 @@ if (nCode==HC_ACTION
                 if (GetKeyState(VK_LMENU) & 0x8000) {
                     flag = flag | KS_LALT;
                 }
-                PostMessage(window, MSG_GAMEKEY, flag, 0);
+                PostMessage(window, MSG_GAMEKEY, team, flag);
                 return 1;
                 break;
         }
