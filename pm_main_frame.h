@@ -15,12 +15,23 @@
 #define BEEP_MIN 600
 #define BEEP_MAX 2000
 
+enum
+{
+    ID_Quit = 1,
+    ID_About,
+    ID_Timer,
+    ID_Beeper,
+};
+
+BEGIN_DECLARE_EVENT_TYPES()
+	DECLARE_LOCAL_EVENT_TYPE( EVT_BEEPER, wxNewEventType() )
+END_DECLARE_EVENT_TYPES()
+
 /* vienos komandos irasai */
 struct ui_row {
     wxPanel * panel;
     wxStaticText * nameDisplay;
     wxStaticText * pointsDisplay;
-    wxString title;
 };
 
 class PMMainFrame: public wxFrame
@@ -32,6 +43,8 @@ private:
     bool beepRandom;
     int beepStart;
     int beepEnd;
+    
+    int state;
     
     bool resetOnStart; 
     
@@ -54,6 +67,7 @@ public:
     void OnTest(wxEvent& event);
     void OnMouseEvent(wxMouseEvent& event);
     void OnTimer(wxTimerEvent& event);
+    void OnBeeper(wxEvent & event);
     virtual WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     
     void SetTeams(int count);

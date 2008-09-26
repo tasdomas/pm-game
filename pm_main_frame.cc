@@ -12,22 +12,17 @@
 #include <cstdlib> 
 #include <ctime> 
 
-
-enum
-{
-    ID_Quit = 1,
-    ID_About,
-    ID_Timer,
-};
+DEFINE_LOCAL_EVENT_TYPE( EVT_BEEPER )
 
 BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
     EVT_MENU(ID_Quit, PMMainFrame::OnQuit)
     EVT_CUSTOM(WM_USER+1, 0, PMMainFrame::OnTest)
     EVT_MOUSE_EVENTS(PMMainFrame::OnMouseEvent)
     EVT_TIMER(ID_Timer, PMMainFrame::OnTimer)
-    
     //settings dialog
     EVT_CHAR(PMMainFrame::OnKey)
+    //paleisti laikmati (gaunama is signalo gijos)
+    EVT_CUSTOM( EVT_BEEPER, wxID_ANY, PMMainFrame::OnBeeper )
 END_EVENT_TABLE()
 
 PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
@@ -46,6 +41,8 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     teamCount = MAX_TEAMS;
     
     srand((unsigned)time(0)); 
+    
+    state = STATE_NOT_RUNNING;
    
     //laikmatis
     timer = new wxTimer(this, ID_Timer);
@@ -170,6 +167,15 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
         case MSG_RESET:
             ResetGame();
             break;
+        case MSG_GAMEKEY:
+//            if (wParam & KS_LSHIFT) {
+            if (state == STATE_BEEPING) {
+                wxMessageBox("falsstartas");
+            } else if (state == STATE_RUNNING) {
+                wxMessageBox("ok");
+            }
+//            }
+            break;
         default:
         rc = wxFrame::MSWWindowProc(message, wParam, lParam);
     }
@@ -215,10 +221,13 @@ void PMMainFrame::OnMouseEvent(wxMouseEvent& event) {
     {
         wxPoint current = event.GetPosition();
         current = current - dragStart;
-        wxPoint window = this->GetScreenPosition();                
-        this->Move(window + current);
+        if ((abs(current.x) + abs(current.y)) > 0) {
+            
+            wxPoint window = this->GetScreenPosition();                
+            this->Move(window + current);
 
-        Refresh(true);
+            Refresh(true);
+        }
 
     }
 }
@@ -340,12 +349,16 @@ void PMMainFrame::StartGame() {
             double random = (double)rand() / RAND_MAX; 
             beep = beepStart + (int)(diff * random);
         }
-            
-        Beep(BEEP_GAMESTART, beep);
-    }
+
+        BeepThread * beepT = new BeepThread(BEEP_GAMESTART, beep, &state, this);
+        if (beepT->Create() == wxTHREAD_NO_ERROR) {
+            beepT->Run();
+        }
+    } else {
     
-    TimerStart(resetOnStart);
-    resetOnStart = false;
+        TimerStart(resetOnStart);
+        resetOnStart = false;
+    }
 }
 
 void PMMainFrame::PauseGame() {
@@ -358,3 +371,7 @@ void PMMainFrame::ResetGame() {
     resetOnStart = true;
 }
 
+void PMMainFrame::OnBeeper(wxEvent & event) {
+    TimerStart(resetOnStart);
+    resetOnStart = false;
+}
