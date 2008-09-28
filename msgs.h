@@ -5,6 +5,7 @@
 #define MSG_PAUSE WM_USER + 2
 #define MSG_RESET WM_USER + 3
 #define MSG_GAMEKEY WM_USER + 4
+#define MSG_SCORE WM_USER + 5
 
 //key states (sent from the hook)
 #define KS_LALT 0x8
@@ -12,12 +13,12 @@
 #define KS_LCTRL 0x2
 
 
-//ord('a')
-#define KEY_START 'a'
-//ord('s')
-#define KEY_PAUSE 's'
-//ord('d')
-#define KEY_RESET 'd'
+//pradeti zaidima
+#define KEY_START VK_F1
+//sustabdyti zaidima
+#define KEY_PAUSE VK_F2
+//atstatyti
+#define KEY_RESET VK_F3
 
 
 #define STATE_NOT_RUNNING 0

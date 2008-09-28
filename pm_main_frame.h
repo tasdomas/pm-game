@@ -33,6 +33,8 @@
 #define TEAM_BLOCKED 2
 #define TEAM_DRAW 3
 
+extern int hookActive;
+
 enum
 {
     ID_Quit = 1,
@@ -51,6 +53,7 @@ struct ui_row {
     wxStaticText * nameDisplay;
     wxStaticText * pointsDisplay;
     int state;
+    int score;
 };
 
 class PMMainFrame: public wxFrame
@@ -92,6 +95,8 @@ public:
     virtual WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     
     void ProcessGameKey(long team, long alt);
+    void SetScore(long ch);
+    void SetScore(int team, int diff);
     
     void SetTeams(int count);
     void SetColour(int pos, wxColour colour);

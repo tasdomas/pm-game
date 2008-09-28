@@ -34,7 +34,7 @@ void PMSettings::CreateControls() {
     wxPanel * panel = new wxPanel(topPanel);
     wxBoxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
     panel->SetSizer(sizer);
-    wxStaticText * text = new wxStaticText(panel, wxID_ANY, wxString("Sk."));
+    wxStaticText * text = new wxStaticText(panel, wxID_ANY, wxString(wxT("Sk.")));
     sizer->Add(text, 0, wxRIGHT | wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL, 10);
     
     countDisplay = new wxSpinCtrl(panel, ID_Spin, wxT("4"), 
@@ -70,11 +70,11 @@ void PMSettings::CreateControls() {
     wxBoxSizer * sz = new wxBoxSizer(wxHORIZONTAL);
     pp->SetSizer(sz);
     
-    beepIntStart = new wxTextCtrl(pp, wxID_ANY, wxString::Format("%d", BEEP_MIN));
+    beepIntStart = new wxTextCtrl(pp, wxID_ANY, wxString::Format(wxT("%d"), BEEP_MIN));
     sz->Add(beepIntStart);
     wxStaticText * label = new wxStaticText(pp, wxID_ANY, wxT("-"));
     sz->Add(label);
-    beepIntEnd = new wxTextCtrl(pp, wxID_ANY, wxString::Format("%d", BEEP_MAX));
+    beepIntEnd = new wxTextCtrl(pp, wxID_ANY, wxString::Format(wxT("%d"), BEEP_MAX));
     sz->Add(beepIntEnd);
     label = new wxStaticText(pp, wxID_ANY, wxT(" (ms)"));
     sz->Add(label);   
@@ -197,7 +197,7 @@ void PMSettings::GetBeepLimits(int& min, int& max) {
 }
     
 void PMSettings::SetBeepLimits(int min, int max) {
-    beepIntStart->SetValue(wxString::Format("%d", min));
-    beepIntEnd->SetValue(wxString::Format("%d", max));
+    beepIntStart->SetValue(wxString::Format(wxT("%d"), min));
+    beepIntEnd->SetValue(wxString::Format(wxT("%d"), max));
 }
 
