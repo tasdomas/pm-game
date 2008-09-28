@@ -1,8 +1,10 @@
 #define _WIN32_WINNT 0x0500
 #include <windows.h>
+
 #include "msgs.h"
 
 extern HWND window;
+extern int hookActive;
 
 /*
  * Keyboard hook - perima klaviaturos paspaudimus ir
@@ -11,7 +13,7 @@ extern HWND window;
 LRESULT CALLBACK LowLevelKeyboard(int nCode, WPARAM wParam, LPARAM lParam)
 { PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
   //
-if (nCode==HC_ACTION
+if ((hookActive) && nCode==HC_ACTION
     //&& (GetKeyState(VK_RCONTROL) & 0x8000)
     && (wParam==WM_KEYDOWN || wParam==WM_SYSKEYDOWN))
   { 
@@ -22,11 +24,17 @@ if (nCode==HC_ACTION
     WORD w =  0;
     //UINT scan=0;
     // apdorojam paprastus klavisus
-    ToAscii(p->vkCode,p->scanCode,ks,&w,0);
-    if (w > 0) {
-        char ch = char(w); 
-           
-        switch (ch) {
+    if (ToAscii(p->vkCode,p->scanCode,ks,&w,0) == 1) {
+
+        char ch = char(w);
+        //tasku redagavimas
+        if ((ch >= '1') && (ch <= '8')) {
+            PostMessage(window, MSG_SCORE, (long)ch, 0);
+            return 1;
+        }
+    } else {
+        
+        switch(p->vkCode) {
             case KEY_START:
                 PostMessage(window, MSG_START, 0, 0);
                 return 1;
@@ -39,10 +47,8 @@ if (nCode==HC_ACTION
                 PostMessage(window, MSG_RESET, 0, 0);
                 return 1;
                 break;
-        }
-    } else {
-        
-        switch(p->vkCode) {
+            
+            
             case VK_F9:
             case VK_F10:
             case VK_F11:

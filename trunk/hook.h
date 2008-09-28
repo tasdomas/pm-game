@@ -7,6 +7,7 @@
 
 // shared data
 HWND window __attribute__((section ("shared"), shared)) = 0;
+int hookActive __attribute__((section ("shared"), shared)) = 0;
 
 /*
  * Keyboard Hook - forward declaration

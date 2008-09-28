@@ -31,6 +31,6 @@ bool PMApp::OnInit()
 
 int PMApp::OnExit() {
     UnhookWindowsHookEx(hook);
-    wxMessageBox("Baigiamas programos darbas.", "Protmusis");
+    //wxMessageBox(wxT("Baigiamas programos darbas."), wxT("Protmusis"));
     return 1;
 }

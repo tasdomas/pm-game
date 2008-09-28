@@ -3,6 +3,7 @@
  *
  * Domas Monkus, 2008.09
  */
+#define wxUSE_UNICODE 1
  
 #include "pm_main_frame.h"
 #include "beep_thread.h"
@@ -45,10 +46,17 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     srand((unsigned)time(0)); 
     
     state = STATE_NOT_RUNNING;
+    
+    for (int i = 0; i < teamCount; i++) {
+        rows[i].state = TEAM_WAITING;
+        rows[i].score = 0;
+    }
    
     //laikmatis
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
+    
+    hookActive = 1;
 
 }
 
@@ -77,7 +85,7 @@ void PMMainFrame::CreateControls() {
 
         rows[i].nameDisplay = new wxStaticText(panel,
             wxID_ANY,
-            wxString("Komanda"),
+            wxString(wxT("Komanda")),
             wxDefaultPosition,
             wxDefaultSize,
             wxALIGN_LEFT);
@@ -93,8 +101,8 @@ void PMMainFrame::CreateControls() {
         rows[i].pointsDisplay->SetFont(wxFont(font));
         rows[i].pointsDisplay->SetEventHandler(this);
 
-        sizer->Add(rows[i].nameDisplay, 9, wxEXPAND | wxALIGN_LEFT);
-        sizer->Add(rows[i].pointsDisplay, 1, wxEXPAND | wxALIGN_RIGHT);
+        sizer->Add(rows[i].nameDisplay, 1, wxEXPAND | wxALIGN_LEFT | wxRIGHT, 10);
+        sizer->Add(rows[i].pointsDisplay, 0, wxEXPAND | wxALIGN_RIGHT);
 
         panel->SetSizer(sizer);
 
@@ -102,8 +110,9 @@ void PMMainFrame::CreateControls() {
     }
 
     topPanel->SetSizer(topSizer);
-    topSizer->Fit(this);
     topSizer->Layout();
+    topSizer->Fit(this);
+
 
     this->SetTransparent(200);
 }
@@ -152,7 +161,7 @@ void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 
 void PMMainFrame::OnTest(wxEvent& WXUNUSED(event))
 {
-    wxMessageBox("OK", "Protmusis");
+
 }
 
 
@@ -160,6 +169,9 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
 {
     WXLRESULT rc = 0;
     switch (message) {
+        case MSG_SCORE:
+            SetScore(wParam);
+            break;
         case MSG_START:
             StartGame();
             break;
@@ -382,11 +394,12 @@ void PMMainFrame::ShowTime(long timeMs) {
     int minutes = timeMs / (60*1000);
     
     wxString time;
-    time.Printf("%02d:%02d:%02d", minutes, seconds, milliseconds);
+    time.Printf(wxT("%02d:%02d:%02d"), minutes, seconds, milliseconds);
     timerDisplay->SetLabel(time);
 }
 
 void PMMainFrame::EditSettings() {
+    hookActive = 0;
     PMSettings dialog(this);
     
     dialog.SetCount(teamCount, true);
@@ -408,6 +421,7 @@ void PMMainFrame::EditSettings() {
     
     beepRandom = dialog.GetRandom();
     dialog.GetBeepLimits(beepStart, beepEnd);
+    hookActive = 1;
 }
 
 void PMMainFrame::OnKey(wxKeyEvent & event) {
@@ -489,6 +503,7 @@ void PMMainFrame::UpdateTeams() {
                 break;
                 
         }
+        rows[i].pointsDisplay->SetLabel(wxString::Format(wxT("%d"), rows[i].score));
     }
     this->Refresh();
 }
@@ -501,3 +516,24 @@ void PMMainFrame::SetTeamState(int pos, int newState) {
     }
     this->Refresh();
 }
+
+void PMMainFrame::SetScore(long ch) {
+    long code = ch - (long)'1';
+    int diff = 1;
+    if (code % 2) {
+        diff = -1;
+    }
+    int team = code / 2;
+    SetScore(team, diff);
+    UpdateTeams();
+    topSizer->Fit(this);
+}
+
+void PMMainFrame::SetScore(int team, int diff) {
+    if ((team >= 0) && (team < teamCount)) {
+        if (rows[team].score + diff >= 0) {
+            rows[team].score += diff;
+        }
+    }
+}
+        
