@@ -6,7 +6,7 @@ LeftChar=1
 Open=1
 Top=0
 [Editors]
-Focused=6
+Focused=8
 Order=3,6,8,2,10,9,5,12,0,4,7,1
 [Editor_0]
 Open=1
@@ -45,10 +45,10 @@ TopLine=7
 LeftChar=1
 [Editor_6]
 Open=1
-Top=1
-CursorCol=6
-CursorRow=553
-TopLine=526
+Top=0
+CursorCol=74
+CursorRow=216
+TopLine=204
 LeftChar=1
 [Editor_7]
 Open=1
@@ -59,9 +59,9 @@ TopLine=1
 LeftChar=1
 [Editor_8]
 Open=1
-Top=0
-CursorCol=9
-CursorRow=107
+Top=1
+CursorCol=26
+CursorRow=19
 TopLine=9
 LeftChar=1
 [Editor_9]

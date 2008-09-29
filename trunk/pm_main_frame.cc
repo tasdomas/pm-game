@@ -213,7 +213,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         if (state == STATE_RUNNING) {
             SetTeamState(team, TEAM_ANSWERING);
             PauseGame();
-            BeepThread * beep = new BeepThread(BEEP_CLICK, 100);
+            BeepThread * beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
             if (beep->Create() == wxTHREAD_NO_ERROR) {
                 beep->Run();
             }
@@ -353,7 +353,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
             if (draw > 1) {
                 beep = new BeepThread(BEEP_DRAW, 100);
             } else {
-                beep = new BeepThread(BEEP_CLICK, 100);
+                beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
                 for (int i = 0; i < teamCount; i++) {
                     if (rows[i].state == TEAM_DRAW) {
                         rows[i].state = TEAM_ANSWERING;
