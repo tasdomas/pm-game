@@ -447,9 +447,13 @@ void PMMainFrame::TimerStart(bool reset) {
         for (int i = 0; i < 5; i++) {
             beeps[i] = true;
         }
-        watch->Start();
+        watch->Start(); 
+    } else {
+        watch->Resume();
+        
     }
     if (!timer->IsRunning()) {
+       
         timer->Start(TIMER_INTERVAL);
     }
 
@@ -467,6 +471,7 @@ void PMMainFrame::TimerStop() {
 
 void PMMainFrame::TimerPause() {
     timer->Stop();
+    watch->Pause();
 }
 
 void PMMainFrame::ShowTime(long timeMs) {
@@ -519,29 +524,32 @@ void PMMainFrame::OnKey(wxKeyEvent & event) {
 }
 
 void PMMainFrame::StartGame() {
-    if (resetOnStart) {
+    if (state == STATE_NOT_RUNNING) {
+            
+        if (resetOnStart) {
+            for (int i = 0; i < teamCount; i++) {
+                SetTeamState(i, TEAM_WAITING);
+            }
+        }
         for (int i = 0; i < teamCount; i++) {
-            SetTeamState(i, TEAM_WAITING);
+            if (rows[i].state == TEAM_DRAW) {
+                rows[i].state = TEAM_WAITING;
+            }
         }
-    }
-    for (int i = 0; i < teamCount; i++) {
-        if (rows[i].state == TEAM_DRAW) {
-            rows[i].state = TEAM_WAITING;
+        UpdateTeams();
+        
+        int beep = beepStart;
+        if (beepRandom) {
+            int diff = beepEnd - beepStart;
+            double random = (double)rand() / RAND_MAX; 
+            beep = beepStart + (int)(diff * random);
         }
-    }
-    UpdateTeams();
+        
     
-    int beep = beepStart;
-    if (beepRandom) {
-        int diff = beepEnd - beepStart;
-        double random = (double)rand() / RAND_MAX; 
-        beep = beepStart + (int)(diff * random);
-    }
-    
-
-    BeepThread * beepT = new BeepThread(BEEP_GAMESTART, beep, &state, this);
-    if (beepT->Create() == wxTHREAD_NO_ERROR) {
-        beepT->Run();
+        BeepThread * beepT = new BeepThread(BEEP_GAMESTART, beep, &state, this);
+        if (beepT->Create() == wxTHREAD_NO_ERROR) {
+            beepT->Run();
+        }
     }
 }
 
