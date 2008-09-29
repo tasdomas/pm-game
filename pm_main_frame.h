@@ -14,6 +14,10 @@
 #define BEEP_GAMESTART 600
 //pabaigos signalo daznis
 #define BEEP_END 350
+//komanda paspaude pirma
+#define BEEP_CLICK 700
+//lygiosios
+#define BEEP_DRAW 400
 //kas kiek laiko atnaujinamas laikmatis (ms)
 #define TIMER_INTERVAL 10
 //kiek sekundziu likus iki pabaigos pradedama signalizuoti

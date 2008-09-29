@@ -213,12 +213,18 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         if (state == STATE_RUNNING) {
             SetTeamState(team, TEAM_ANSWERING);
             PauseGame();
+            BeepThread * beep = new BeepThread(BEEP_CLICK, 100);
+            if (beep->Create() == wxTHREAD_NO_ERROR) {
+                beep->Run();
+            }
+            
         } else if (state == STATE_BEEPING) {
             SetTeamState(team, TEAM_BLOCKED);            
         }
         UpdateTeams();
         
     } else if (alt != 0) { //lygiosios
+        bool beep = false;
         int newState = TEAM_DRAW;
         if (state == STATE_BEEPING) {
             newState = TEAM_BLOCKED;
@@ -228,18 +234,22 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                 case 0:
                     SetTeamState(2, newState);
                     SetTeamState(1, newState);
+                    beep = true;
                     break;
                 case 1:
                     SetTeamState(2, newState);
                     SetTeamState(0, newState);
+                    beep = true;
                     break;
                 case 2:
                     SetTeamState(0, newState);
                     SetTeamState(1, newState);
+                    beep = true;
                     break;
                 case 3:
                     SetTeamState(2, newState);
                     SetTeamState(3, newState);
+                    beep = true;
                     break;
             }
         } else if (alt & KS_LALT) {
@@ -247,16 +257,19 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                 case 0:
                     SetTeamState(3, newState);
                     SetTeamState(1, newState);
+                    beep = true;
                     break;
                 case 1:
                     SetTeamState(3, newState);
                     SetTeamState(0, newState);
+                    beep = true;
                     break;
                 case 2:
                     SetTeamState(0, newState);
                     SetTeamState(1, newState);
                     SetTeamState(2, newState);
                     SetTeamState(3, newState);
+                    beep = true;
                     break;
             }
         } else if (alt & KS_LCTRL) {
@@ -265,27 +278,38 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     SetTeamState(1, newState);
                     SetTeamState(2, newState);
                     SetTeamState(3, newState);                    
+                    beep = true;
                     break;
                 case 1:
                     SetTeamState(3, newState);
                     SetTeamState(2, newState);
                     SetTeamState(0, newState);
+                    beep = true;
                     break;
                 case 2:
                     SetTeamState(3, newState);
                     SetTeamState(1, newState);
                     SetTeamState(0, newState);
+                    beep = true;
                     break;
                 case 3:
                     SetTeamState(2, newState);
                     SetTeamState(1, newState);
                     SetTeamState(0, newState);
+                    beep = true;
                     break;
             }
         }
         if (newState == TEAM_DRAW) {
             PauseGame();
         }
+        if (beep) {
+            BeepThread * beep = new BeepThread(BEEP_DRAW, 100);
+            if (beep->Create() == wxTHREAD_NO_ERROR) {
+                beep->Run();
+            }
+        }            
+        
     }
     UpdateTeams();
 
