@@ -104,7 +104,7 @@ public:
     
     void SetTeams(int count);
     void SetColour(int pos, wxColour colour);
-    void SetTeamState(int pos, int newState);
+    bool SetTeamState(int pos, int newState);
     
     //timer control
     void TimerStart(bool reset = true);

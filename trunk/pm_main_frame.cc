@@ -224,7 +224,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         UpdateTeams();
         
     } else if (alt != 0) { //lygiosios
-        bool beep = false;
+        int draw = 0;
         int newState = TEAM_DRAW;
         if (state == STATE_BEEPING) {
             newState = TEAM_BLOCKED;
@@ -232,83 +232,141 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         if (alt & KS_LSHIFT) {
             switch (team) {
                 case 0:
-                    SetTeamState(2, newState);
-                    SetTeamState(1, newState);
-                    beep = true;
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
                     break;
                 case 1:
-                    SetTeamState(2, newState);
-                    SetTeamState(0, newState);
-                    beep = true;
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
+
                     break;
                 case 2:
-                    SetTeamState(0, newState);
-                    SetTeamState(1, newState);
-                    beep = true;
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
                     break;
                 case 3:
-                    SetTeamState(2, newState);
-                    SetTeamState(3, newState);
-                    beep = true;
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
                     break;
             }
         } else if (alt & KS_LALT) {
             switch(team) {
                 case 0:
-                    SetTeamState(3, newState);
-                    SetTeamState(1, newState);
-                    beep = true;
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
                     break;
                 case 1:
-                    SetTeamState(3, newState);
-                    SetTeamState(0, newState);
-                    beep = true;
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
                     break;
                 case 2:
-                    SetTeamState(0, newState);
-                    SetTeamState(1, newState);
-                    SetTeamState(2, newState);
-                    SetTeamState(3, newState);
-                    beep = true;
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
                     break;
             }
         } else if (alt & KS_LCTRL) {
             switch(team) {
                 case 0:
-                    SetTeamState(1, newState);
-                    SetTeamState(2, newState);
-                    SetTeamState(3, newState);                    
-                    beep = true;
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
                     break;
                 case 1:
-                    SetTeamState(3, newState);
-                    SetTeamState(2, newState);
-                    SetTeamState(0, newState);
-                    beep = true;
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
                     break;
                 case 2:
-                    SetTeamState(3, newState);
-                    SetTeamState(1, newState);
-                    SetTeamState(0, newState);
-                    beep = true;
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
                     break;
                 case 3:
-                    SetTeamState(2, newState);
-                    SetTeamState(1, newState);
-                    SetTeamState(0, newState);
-                    beep = true;
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
                     break;
             }
         }
-        if (newState == TEAM_DRAW) {
+        if ((newState == TEAM_DRAW) && (draw > 0)) {
             PauseGame();
-        }
-        if (beep) {
-            BeepThread * beep = new BeepThread(BEEP_DRAW, 100);
+            
+            BeepThread * beep;
+            if (draw > 1) {
+                beep = new BeepThread(BEEP_DRAW, 100);
+            } else {
+                beep = new BeepThread(BEEP_CLICK, 100);
+                for (int i = 0; i < teamCount; i++) {
+                    if (rows[i].state == TEAM_DRAW) {
+                        rows[i].state = TEAM_ANSWERING;
+                    }
+                }
+            }
+            
             if (beep->Create() == wxTHREAD_NO_ERROR) {
                 beep->Run();
             }
-        }            
+
+            
+        }
         
     }
     UpdateTeams();
@@ -532,13 +590,14 @@ void PMMainFrame::UpdateTeams() {
     this->Refresh();
 }
   
-void PMMainFrame::SetTeamState(int pos, int newState) {
+bool PMMainFrame::SetTeamState(int pos, int newState) {
     if ((pos >= 0) && (pos < MAX_TEAMS)) {
         if ((rows[pos].state == TEAM_WAITING) || (newState == TEAM_WAITING)) {
             rows[pos].state = newState;
-        }
+            return true;
+        } 
     }
-    this->Refresh();
+    return false;
 }
 
 void PMMainFrame::SetScore(long ch) {
