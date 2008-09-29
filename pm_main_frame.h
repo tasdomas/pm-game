@@ -15,7 +15,8 @@
 //pabaigos signalo daznis
 #define BEEP_END 350
 //komanda paspaude pirma
-#define BEEP_CLICK 700
+#define BEEP_CLICK 300
+#define BEEP_CLICK_LEN 600
 //lygiosios
 #define BEEP_DRAW 400
 //kas kiek laiko atnaujinamas laikmatis (ms)
