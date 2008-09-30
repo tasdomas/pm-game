@@ -415,15 +415,17 @@ void PMMainFrame::OnTimer(wxTimerEvent& event) {
     int seconds = (elapse / 1000) % 60;
     int minutes = elapse / (60*1000);
     
-    if ((seconds > 0) && (seconds <= BEEP_START) && (milliseconds == 0)) {
-       if (beeps[seconds]) {
+    if ((seconds > 0) && (seconds <= BEEP_START)) {
+        if (((milliseconds == 0) && (seconds - 1 == beepCount))
+            || ((milliseconds != 0) && (seconds == beepCount))) {
+                beepCount--;
             BeepThread * beep = new BeepThread(BEEP_NOTICE, 50);
             if (beep->Create() == wxTHREAD_NO_ERROR) {
                 beep->Run();
             }
-//            Beep(BEEP_NOTICE, 50);
-            beeps[seconds] = false;
+
         }
+        
     }
         
     if ((minutes <= 0) && (seconds <= 0) && (milliseconds <= 0)) {
@@ -444,6 +446,7 @@ void PMMainFrame::OnTimer(wxTimerEvent& event) {
 //timer functions
 void PMMainFrame::TimerStart(bool reset) {
     if (reset) {
+        beepCount = BEEP_START - 1;
         for (int i = 0; i < 5; i++) {
             beeps[i] = true;
         }

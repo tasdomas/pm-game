@@ -70,6 +70,10 @@ private:
     bool beepRandom;
     int beepStart;
     int beepEnd;
+
+    long msCount;
+    bool beeps[5];
+    int beepCount;
     
     int state;
     
@@ -82,8 +86,6 @@ private:
     wxPoint dragStart;
     wxPoint startPos;    
     int dragMode;
-    long msCount;
-    bool beeps[5];
     
     wxColour defaultBackground;
         
