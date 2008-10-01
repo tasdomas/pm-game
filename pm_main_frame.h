@@ -3,6 +3,10 @@
 
 #include "wx/wx.h" 
 
+#include <iostream>
+#include <fstream>
+using namespace std;
+
 #define MAX_TEAMS 4
 
 /****************
@@ -70,6 +74,8 @@ private:
     bool beepRandom;
     int beepStart;
     int beepEnd;
+
+    ofstream t;
 
     long msCount;
     bool beeps[5];

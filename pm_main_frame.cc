@@ -57,6 +57,8 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     watch = new wxStopWatch();
     
     hookActive = 1;
+    
+    //t.open("t.txt");
 
 }
 
@@ -156,6 +158,7 @@ void PMMainFrame::SetTeams (int count) {
 
 void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
+    //t.close();
     Close(TRUE);
 }
 
@@ -182,6 +185,7 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
             ResetGame();
             break;
         case MSG_GAMEKEY:
+            //t << "team: " << wParam << " alt " << lParam << endl;
             if (state != STATE_NOT_RUNNING) {
                 ProcessGameKey(wParam, lParam);
             }
@@ -189,19 +193,6 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
         default:
         rc = wxFrame::MSWWindowProc(message, wParam, lParam);
     }
-        
-    /*
-    if (message == WM_USER + 1) {
-        wxMessageBox("ok");
-//        this->SetColour(1, wxColour(0xff, 0, 0));        
-        if (!this->timer->IsRunning()) {
-            TimerStart();
-        } else {
-            TimerStop();
-        }
-    } else {
-//    if ( !processed )
-    */
     
 
     return rc;
@@ -231,7 +222,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         }
         if (alt & KS_LSHIFT) {
             switch (team) {
-                case 0:
+                case 3:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
@@ -239,7 +230,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
-                case 1:
+                case 2:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
@@ -248,7 +239,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     }
 
                     break;
-                case 2:
+                case 1:
                     if (SetTeamState(0, newState)) {
                         draw++;
                     }
@@ -256,7 +247,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
-                case 3:
+                case 0:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
@@ -267,7 +258,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
             }
         } else if (alt & KS_LALT) {
             switch(team) {
-                case 0:
+                case 3:
                     if (SetTeamState(3, newState)) {
                         draw++;
                     }
@@ -275,7 +266,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
-                case 1:
+                case 2:
                     if (SetTeamState(3, newState)) {
                         draw++;
                     }
@@ -283,7 +274,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
-                case 2:
+                case 1:
                     if (SetTeamState(0, newState)) {
                         draw++;
                     }
@@ -300,7 +291,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
             }
         } else if (alt & KS_LCTRL) {
             switch(team) {
-                case 0:
+                case 3:
                     if (SetTeamState(1, newState)) {
                         draw++;
                     }
@@ -308,17 +299,6 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 1:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
                         draw++;
                     }
                     break;
@@ -326,6 +306,17 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     if (SetTeamState(3, newState)) {
                         draw++;
                     }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
+                    break;
+                case 1:
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
                     if (SetTeamState(1, newState)) {
                         draw++;
                     }
@@ -333,7 +324,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
-                case 3:
+                case 0:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
