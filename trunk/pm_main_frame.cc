@@ -16,8 +16,6 @@
 DEFINE_LOCAL_EVENT_TYPE( EVT_BEEPER )
 
 BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
-    EVT_MENU(ID_Quit, PMMainFrame::OnQuit)
-    EVT_CUSTOM(WM_USER+1, 0, PMMainFrame::OnTest)
     EVT_MOUSE_EVENTS(PMMainFrame::OnMouseEvent)
     EVT_TIMER(ID_Timer, PMMainFrame::OnTimer)
     //settings dialog
@@ -58,7 +56,7 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     
     hookActive = 1;
     
-    //t.open("t.txt");
+    t.open("t.txt");
 
 }
 
@@ -158,7 +156,7 @@ void PMMainFrame::SetTeams (int count) {
 
 void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    //t.close();
+    t.close();
     Close(TRUE);
 }
 
@@ -185,7 +183,7 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
             ResetGame();
             break;
         case MSG_GAMEKEY:
-            //t << "team: " << wParam << " alt " << lParam << endl;
+            
             if (state != STATE_NOT_RUNNING) {
                 ProcessGameKey(wParam, lParam);
             }
@@ -199,7 +197,7 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
 }
 
 void PMMainFrame::ProcessGameKey(long team, long alt) {
-    
+    t << "team: " << team << " alt " << alt << endl;
     if ((alt == 0) && (rows[team].state == TEAM_WAITING)) {
         if (state == STATE_RUNNING) {
             SetTeamState(team, TEAM_ANSWERING);
@@ -220,7 +218,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         if (state == STATE_BEEPING) {
             newState = TEAM_BLOCKED;
         }
-        if (alt & KS_LSHIFT) {
+        if (alt == KS_LSHIFT) {
             switch (team) {
                 case 3:
                     if (SetTeamState(2, newState)) {
@@ -254,9 +252,9 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     if (SetTeamState(3, newState)) {
                         draw++;
                     }
-                    break;
+
             }
-        } else if (alt & KS_LALT) {
+        } else if (alt == KS_LALT) {
             switch(team) {
                 case 3:
                     if (SetTeamState(3, newState)) {
@@ -289,7 +287,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     }
                     break;
             }
-        } else if (alt & KS_LCTRL) {
+        } else if (alt == KS_LCTRL) {
             switch(team) {
                 case 3:
                     if (SetTeamState(1, newState)) {
@@ -345,11 +343,13 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                 beep = new BeepThread(BEEP_DRAW, 100);
             } else {
                 beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
+
                 for (int i = 0; i < teamCount; i++) {
                     if (rows[i].state == TEAM_DRAW) {
                         rows[i].state = TEAM_ANSWERING;
                     }
                 }
+              
             }
             
             if (beep->Create() == wxTHREAD_NO_ERROR) {
@@ -518,6 +518,7 @@ void PMMainFrame::OnKey(wxKeyEvent & event) {
 }
 
 void PMMainFrame::StartGame() {
+
     if (state == STATE_NOT_RUNNING) {
             
         if (resetOnStart) {
