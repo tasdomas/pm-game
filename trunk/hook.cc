@@ -55,13 +55,13 @@ if ((hookActive) && nCode==HC_ACTION
             case VK_F12:    
                 long team = 0;
                 if (p->vkCode == VK_F9) {
-                    team = 0;
-                } else if (p->vkCode == VK_F10) {
-                    team = 1;
-                } else if (p->vkCode == VK_F11) {
-                    team = 2;
-                } else if (p->vkCode == VK_F12) {
                     team = 3;
+                } else if (p->vkCode == VK_F10) {
+                    team = 2;
+                } else if (p->vkCode == VK_F11) {
+                    team = 1;
+                } else if (p->vkCode == VK_F12) {
+                    team = 0;
                 };
                 long flag = 0;
                 if (GetKeyState(VK_LCONTROL) & 0x8000) {
