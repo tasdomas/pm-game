@@ -197,8 +197,9 @@ WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM l
 }
 
 void PMMainFrame::ProcessGameKey(long team, long alt) {
-    t << "team: " << team << " alt " << alt << endl;
-    if ((alt == 0) && (rows[team].state == TEAM_WAITING)) {
+
+    if ((alt == 0) && (rows[team].state == TEAM_WAITING) 
+        && (team >= 0) && (team < 4)) {
         if (state == STATE_RUNNING) {
             SetTeamState(team, TEAM_ANSWERING);
             PauseGame();
@@ -212,60 +213,34 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         }
         UpdateTeams();
         
-    } else if (alt != 0) { //lygiosios
+    } else if ((alt != 0) || (team == -1)) { //lygiosios
         int draw = 0;
         int newState = TEAM_DRAW;
         if (state == STATE_BEEPING) {
             newState = TEAM_BLOCKED;
         }
-        if (alt == KS_LSHIFT) {
-            switch (team) {
-                case 3:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-
-                    break;
-                case 1:
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
+        if (team == -1) {
+            if (SetTeamState(0, newState)) {
+                draw++;
+            }
+            if (SetTeamState(1, newState)) {
+                draw++;
+            }
+            if (SetTeamState(2, newState)) {
+                draw++;
+            }
+            if (SetTeamState(3, newState)) {
+                draw++;
+            }
+        }
+            
+        if (alt == KS_LALT) {
+            switch(team) {
                 case 0:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-
-            }
-        } else if (alt == KS_LALT) {
-            switch(team) {
-                case 3:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
                     if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(3, newState)) {
                         draw++;
                     }
                     if (SetTeamState(0, newState)) {
@@ -273,9 +248,29 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     }
                     break;
                 case 1:
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                   
                     if (SetTeamState(0, newState)) {
                         draw++;
                     }
+                    break;
+                case 2:
+                    if (SetTeamState(0, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    break;
+                case 3:
                     if (SetTeamState(1, newState)) {
                         draw++;
                     }
@@ -286,25 +281,12 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         draw++;
                     }
                     break;
+
             }
         } else if (alt == KS_LCTRL) {
             switch(team) {
-                case 3:
+                case 0:
                     if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
                         draw++;
                     }
                     if (SetTeamState(0, newState)) {
@@ -312,27 +294,46 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                     }
                     break;
                 case 1:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
                     if (SetTeamState(0, newState)) {
                         draw++;
                     }
-                    break;
-                case 0:
                     if (SetTeamState(2, newState)) {
                         draw++;
                     }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
+                    break;
+                case 2:
                     if (SetTeamState(0, newState)) {
                         draw++;
                     }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
                     break;
+                case 3:
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    break;
+                case 4:
+                    if (SetTeamState(1, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    break;
+                case 5:
+                    if (SetTeamState(2, newState)) {
+                        draw++;
+                    }
+                    if (SetTeamState(3, newState)) {
+                        draw++;
+                    }
+                    break;
+                    
             }
         }
         if ((newState == TEAM_DRAW) && (draw > 0)) {

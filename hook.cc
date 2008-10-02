@@ -24,15 +24,17 @@ if ((hookActive) && nCode==HC_ACTION
     WORD w =  0;
     //UINT scan=0;
     // apdorojam paprastus klavisus
-    if (ToAscii(p->vkCode,p->scanCode,ks,&w,0) == 1) {
-
-        char ch = char(w);
-        //tasku redagavimas
-        if ((ch >= '1') && (ch <= '8')) {
-            PostMessage(window, MSG_SCORE, (long)ch, 0);
-        }
-    } else {
+    if (((p->vkCode < VK_NUMPAD0) || (p->vkCode > VK_NUMPAD9)) 
+        && (ToAscii(p->vkCode,p->scanCode,ks,&w,0) == 1)) {
+    
+            char ch = char(w);
+            //tasku redagavimas
+            if ((ch >= '1') && (ch <= '8')) {
+                PostMessage(window, MSG_SCORE, (long)ch, 0);
+            }
         
+    } else {
+        long team = 0;
         switch(p->vkCode) {
             case KEY_START:
                 PostMessage(window, MSG_START, 0, 0);
@@ -45,20 +47,15 @@ if ((hookActive) && nCode==HC_ACTION
                 break;
             
             
-            case VK_F9:
-            case VK_F10:
-            case VK_F11:
-            case VK_F12:    
-                long team = 0;
-                if (p->vkCode == VK_F9) {
-                    team = 3;
-                } else if (p->vkCode == VK_F10) {
-                    team = 2;
-                } else if (p->vkCode == VK_F11) {
-                    team = 1;
-                } else if (p->vkCode == VK_F12) {
-                    team = 0;
-                };
+            case VK_NUMPAD1:
+            case VK_NUMPAD2:
+            case VK_NUMPAD3:
+            case VK_NUMPAD4:  
+            case VK_NUMPAD5:
+            case VK_NUMPAD6:
+            case VK_NUMPAD0:  
+                team = p->vkCode - VK_NUMPAD1;
+                
                 long flag = 0;
                 if (GetKeyState(VK_LCONTROL) & 0x8000) {
                     flag = flag | KS_LCTRL;
