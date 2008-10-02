@@ -42,14 +42,50 @@ using namespace std;
 #define TEAM_BLOCKED 2
 #define TEAM_DRAW 3
 
-extern int hookActive;
-
 enum
 {
     ID_Quit = 1,
     ID_About,
     ID_Timer,
     ID_Beeper,
+    ID_Team1,
+    ID_Team2,
+    ID_Team3,
+    ID_Team4,
+
+    ID_Team12,
+    ID_Team13,
+    ID_Team14,
+    ID_Team23,
+    ID_Team24,
+    ID_Team34,
+
+    ID_Team123,
+    ID_Team134,
+    ID_Team124,
+    ID_Team234,
+
+    ID_Team1234,
+    
+    ID_StartGame,
+    ID_PauseGame,
+    ID_ResetGame,
+    
+    ID_Points1,
+    ID_Points2,
+    ID_Points3,
+    ID_Points4,
+    ID_Points5,
+    ID_Points6,
+    ID_Points7,
+    ID_Points8
+    
+};
+
+struct key_def {
+    int id;
+    int keycode;
+    int mod;
 };
 
 BEGIN_DECLARE_EVENT_TYPES()
@@ -134,6 +170,9 @@ public:
     
     //event handlers
     void OnKey(wxKeyEvent & event);
+    void RegisterHotKeys();
+    void UnregisterHotKeys();
+    void OnHotKey(wxKeyEvent & event);    
 
     DECLARE_EVENT_TABLE()
 };

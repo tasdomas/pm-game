@@ -13,6 +13,42 @@
 #include <cstdlib> 
 #include <ctime> 
 
+key_def hotkeys[27] = {
+    {ID_Team1, VK_F12, 0},
+    {ID_Team2, VK_F11, 0},
+    {ID_Team3, VK_F10, 0},
+    {ID_Team4, VK_F9, 0},
+
+    {ID_Team12, VK_F11, wxMOD_SHIFT},
+    {ID_Team13, VK_F10, wxMOD_SHIFT},
+    {ID_Team14, VK_F10, wxMOD_ALT},
+    {ID_Team23, VK_F9, wxMOD_SHIFT},
+    {ID_Team24, VK_F9, wxMOD_ALT},
+    {ID_Team34, VK_F12, wxMOD_SHIFT},
+
+    {ID_Team123, VK_F12, wxMOD_CONTROL},
+    {ID_Team134, VK_F10, wxMOD_CONTROL},
+    {ID_Team124, VK_F11, wxMOD_CONTROL},
+    {ID_Team234, VK_F9, wxMOD_CONTROL},
+
+    {ID_Team1234, VK_F11, wxMOD_ALT},
+
+    {ID_StartGame, VK_F1, 0},
+    {ID_PauseGame, VK_F2, 0},
+    {ID_ResetGame, VK_F3, 0},
+
+    {ID_Points1, VkKeyScan('1'), wxMOD_CONTROL},
+    {ID_Points2, VkKeyScan('2'), wxMOD_CONTROL},
+    {ID_Points3, VkKeyScan('3'), wxMOD_CONTROL},
+    {ID_Points4, VkKeyScan('4'), wxMOD_CONTROL},
+    {ID_Points5, VkKeyScan('5'), wxMOD_CONTROL},
+    {ID_Points6, VkKeyScan('6'), wxMOD_CONTROL},
+    {ID_Points7, VkKeyScan('7'), wxMOD_CONTROL},
+    {ID_Points8, VkKeyScan('8'), wxMOD_CONTROL}
+    
+};
+
+
 DEFINE_LOCAL_EVENT_TYPE( EVT_BEEPER )
 
 BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
@@ -22,6 +58,7 @@ BEGIN_EVENT_TABLE(PMMainFrame, wxFrame)
     EVT_CHAR(PMMainFrame::OnKey)
     //paleisti laikmati (gaunama is signalo gijos)
     EVT_CUSTOM( EVT_BEEPER, wxID_ANY, PMMainFrame::OnBeeper )
+    //EVT_HOTKEY( ID_Team1, PMMainFrame::OnHotKey)
 END_EVENT_TABLE()
 
 PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
@@ -54,9 +91,9 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
     
-    hookActive = 1;
-    
     t.open("t.txt");
+    
+    RegisterHotKeys();
 
 }
 
@@ -480,7 +517,7 @@ void PMMainFrame::ShowTime(long timeMs) {
 }
 
 void PMMainFrame::EditSettings() {
-    hookActive = 0;
+
     PMSettings dialog(this);
     
     dialog.SetCount(teamCount, true);
@@ -502,7 +539,6 @@ void PMMainFrame::EditSettings() {
     
     beepRandom = dialog.GetRandom();
     dialog.GetBeepLimits(beepStart, beepEnd);
-    hookActive = 1;
 }
 
 void PMMainFrame::OnKey(wxKeyEvent & event) {
@@ -623,3 +659,21 @@ void PMMainFrame::SetScore(int team, int diff) {
     }
 }
         
+void PMMainFrame::RegisterHotKeys() {
+    for (int i = 0; i < 27; i++) {
+        if (this->RegisterHotKey(hotkeys[i].id, hotkeys[i].mod, hotkeys[i].keycode)) {
+            Connect(hotkeys[i].id, wxEVT_HOTKEY, wxCharEventHandler(PMMainFrame::OnHotKey));
+        }
+    }
+
+}
+
+void PMMainFrame::OnHotKey(wxKeyEvent & event) {
+    wxMessageBox(wxT("aaaaaaaaaaaa"));
+}
+
+void PMMainFrame::UnregisterHotKeys() {
+    for (int i = 0; i < 27; i++) {
+        this->UnregisterHotKey(hotkeys[i].id);
+    }
+}    
