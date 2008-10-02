@@ -26,6 +26,9 @@ bool PMApp::OnInit()
     HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
 
     hook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboard, hInstance, 0);
+    if (hook == NULL) {
+        wxMessageBox(wxT("Nepavyko perimti klaviaturos valdymo. Programa neveiks."));
+    }
     return TRUE;
 }
 
