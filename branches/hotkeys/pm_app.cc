@@ -7,9 +7,6 @@
 #include "pm_app.h"
 #include "pm_main_frame.h"
 
-extern HWND window;
-LRESULT CALLBACK LowLevelKeyboard(int nCode, WPARAM wParam, LPARAM lParam);
- 
 bool PMApp::OnInit()
 {
     PMMainFrame *frame = new PMMainFrame(
@@ -21,16 +18,9 @@ bool PMApp::OnInit()
     frame->Show(TRUE);
     SetTopWindow(frame);
 
-    window = (HWND)frame->GetHWND();
-
-    HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-
-    hook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboard, hInstance, 0);
     return TRUE;
 }
 
 int PMApp::OnExit() {
-    UnhookWindowsHookEx(hook);
-    //wxMessageBox(wxT("Baigiamas programos darbas."), wxT("Protmusis"));
     return 1;
 }
