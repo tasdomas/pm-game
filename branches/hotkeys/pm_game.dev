@@ -1,7 +1,7 @@
 [Project]
 FileName=pm_game.dev
 Name=pm_game
-UnitCount=13
+UnitCount=11
 PchHead=-1
 PchSource=-1
 Ver=3
@@ -114,37 +114,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit4]
-FileName=hook.cc
-CompileCpp=1
-Folder=pm_game
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
 [Unit5]
-FileName=hook.h
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit6]
-FileName=pm_app.cc
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit7]
 FileName=pm_main_frame.cc
 CompileCpp=1
 Folder=
@@ -154,7 +124,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit8]
+[Unit6]
 FileName=pm_app.h
 CompileCpp=1
 Folder=
@@ -164,7 +134,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit9]
+[Unit7]
 FileName=pm_main_frame.h
 CompileCpp=1
 Folder=
@@ -174,7 +144,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit10]
+[Unit8]
 FileName=beep_thread.h
 CompileCpp=1
 Folder=
@@ -184,7 +154,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit11]
+[Unit9]
 FileName=beep_thread.cc
 CompileCpp=1
 Folder=
@@ -193,6 +163,26 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
+
+[Unit10]
+FileName=pm_settings_frame.h
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit11]
+FileName=pm_settings_frame.cc
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=$(CPP) -c pm_settings_frame.cc -o Objects/MingW/pm_settings_frame.o $(CXXFLAGS)
 
 [Unit12]
 FileName=pm_settings_frame.h
@@ -213,4 +203,14 @@ Link=1
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c pm_settings_frame.cc -o Objects/MingW/pm_settings_frame.o $(CXXFLAGS)
+
+[Unit4]
+FileName=pm_app.cc
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
 
