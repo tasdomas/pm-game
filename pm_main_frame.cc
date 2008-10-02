@@ -14,37 +14,37 @@
 #include <ctime> 
 
 key_def hotkeys[27] = {
-    {ID_Team1, VK_F12, 0},
-    {ID_Team2, VK_F11, 0},
-    {ID_Team3, VK_F10, 0},
-    {ID_Team4, VK_F9, 0},
+    {ID_Team1, VK_F12, 0, BTN_1},
+    {ID_Team2, VK_F11, 0, BTN_2},
+    {ID_Team3, VK_F10, 0, BTN_3},
+    {ID_Team4, VK_F9, 0, BTN_4},
 
-    {ID_Team12, VK_F11, wxMOD_SHIFT},
-    {ID_Team13, VK_F10, wxMOD_SHIFT},
-    {ID_Team14, VK_F10, wxMOD_ALT},
-    {ID_Team23, VK_F9, wxMOD_SHIFT},
-    {ID_Team24, VK_F9, wxMOD_ALT},
-    {ID_Team34, VK_F12, wxMOD_SHIFT},
+    {ID_Team12, VK_F11, wxMOD_SHIFT, BTN_1 | BTN_2},
+    {ID_Team13, VK_F10, wxMOD_SHIFT, BTN_1 | BTN_3},
+    {ID_Team14, VK_F10, wxMOD_ALT, BTN_1 | BTN_4},
+    {ID_Team23, VK_F9, wxMOD_SHIFT, BTN_2 | BTN_3},
+    {ID_Team24, VK_F9, wxMOD_ALT, BTN_2 | BTN_4},
+    {ID_Team34, VK_F12, wxMOD_SHIFT, BTN_3 | BTN_4},
 
-    {ID_Team123, VK_F12, wxMOD_CONTROL},
-    {ID_Team134, VK_F10, wxMOD_CONTROL},
-    {ID_Team124, VK_F11, wxMOD_CONTROL},
-    {ID_Team234, VK_F9, wxMOD_CONTROL},
+    {ID_Team123, VK_F12, wxMOD_CONTROL, BTN_1 | BTN_2 | BTN_3},
+    {ID_Team134, VK_F10, wxMOD_CONTROL, BTN_1 | BTN_3 | BTN_4},
+    {ID_Team124, VK_F11, wxMOD_CONTROL, BTN_1 | BTN_2 | BTN_4},
+    {ID_Team234, VK_F9, wxMOD_CONTROL, BTN_2 | BTN_3 | BTN_4},
 
-    {ID_Team1234, VK_F11, wxMOD_ALT},
+    {ID_Team1234, VK_F11, wxMOD_ALT, BTN_1 | BTN_2 | BTN_3 | BTN_4},
 
-    {ID_StartGame, VK_F1, 0},
-    {ID_PauseGame, VK_F2, 0},
-    {ID_ResetGame, VK_F3, 0},
+    {ID_StartGame, VK_F1, 0, 0},
+    {ID_PauseGame, VK_F2, 0, 0},
+    {ID_ResetGame, VK_F3, 0, 0},
 
-    {ID_Points1, VkKeyScan('1'), wxMOD_CONTROL},
-    {ID_Points2, VkKeyScan('2'), wxMOD_CONTROL},
-    {ID_Points3, VkKeyScan('3'), wxMOD_CONTROL},
-    {ID_Points4, VkKeyScan('4'), wxMOD_CONTROL},
-    {ID_Points5, VkKeyScan('5'), wxMOD_CONTROL},
-    {ID_Points6, VkKeyScan('6'), wxMOD_CONTROL},
-    {ID_Points7, VkKeyScan('7'), wxMOD_CONTROL},
-    {ID_Points8, VkKeyScan('8'), wxMOD_CONTROL}
+    {ID_Points1, VkKeyScan('1'), wxMOD_CONTROL, 0},
+    {ID_Points2, VkKeyScan('2'), wxMOD_CONTROL, 0},
+    {ID_Points3, VkKeyScan('3'), wxMOD_CONTROL, 0},
+    {ID_Points4, VkKeyScan('4'), wxMOD_CONTROL, 0},
+    {ID_Points5, VkKeyScan('5'), wxMOD_CONTROL, 0},
+    {ID_Points6, VkKeyScan('6'), wxMOD_CONTROL, 0},
+    {ID_Points7, VkKeyScan('7'), wxMOD_CONTROL, 0},
+    {ID_Points8, VkKeyScan('8'), wxMOD_CONTROL, 0}
     
 };
 
@@ -90,8 +90,6 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     //laikmatis
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
-    
-    t.open("t.txt");
     
     RegisterHotKeys();
 
@@ -193,7 +191,6 @@ void PMMainFrame::SetTeams (int count) {
 
 void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    t.close();
     Close(TRUE);
 }
 
@@ -202,183 +199,51 @@ void PMMainFrame::OnTest(wxEvent& WXUNUSED(event))
 
 }
 
-
-WXLRESULT PMMainFrame::MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam)
-{
-    WXLRESULT rc = 0;
-    switch (message) {
-        case MSG_SCORE:
-            SetScore(wParam);
-            break;
-        case MSG_START:
-            StartGame();
-            break;
-        case MSG_PAUSE :
-            PauseGame();
-            break;
-        case MSG_RESET:
-            ResetGame();
-            break;
-        case MSG_GAMEKEY:
-            
-            if (state != STATE_NOT_RUNNING) {
-                ProcessGameKey(wParam, lParam);
-            }
-            break;
-        default:
-        rc = wxFrame::MSWWindowProc(message, wParam, lParam);
-    }
-    
-
-    return rc;
-}
-
-void PMMainFrame::ProcessGameKey(long team, long alt) {
-    t << "team: " << team << " alt " << alt << endl;
-    if ((alt == 0) && (rows[team].state == TEAM_WAITING)) {
-        if (state == STATE_RUNNING) {
-            SetTeamState(team, TEAM_ANSWERING);
-            PauseGame();
-            BeepThread * beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
-            if (beep->Create() == wxTHREAD_NO_ERROR) {
-                beep->Run();
-            }
-            
-        } else if (state == STATE_BEEPING) {
-            SetTeamState(team, TEAM_BLOCKED);            
-        }
-        UpdateTeams();
+void PMMainFrame::ProcessGameKey(int btnstate) {
+    bool singlebtn = false;
+    int btn = 1;
+    for (int team = 0; team < 4; team++) {
+        if ((btnstate == btn)) {
+            singlebtn = true;
+            if (rows[team].state == TEAM_WAITING) {
+                if (state == STATE_RUNNING) {
+                    SetTeamState(team, TEAM_ANSWERING);
+                    PauseGame();
+                    BeepThread * beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
+                    if (beep->Create() == wxTHREAD_NO_ERROR) {
+                        beep->Run();
+                    }
         
-    } else if (alt != 0) { //lygiosios
+                } else if (state == STATE_BEEPING) {
+                    SetTeamState(team, TEAM_BLOCKED);
+                }
+                UpdateTeams();
+            }
+        }
+        btn = btn << 1;
+    }
+    if (!singlebtn) {
+        btn = 1;
         int draw = 0;
         int newState = TEAM_DRAW;
         if (state == STATE_BEEPING) {
             newState = TEAM_BLOCKED;
         }
-        if (alt == KS_LSHIFT) {
-            switch (team) {
-                case 3:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-
-                    break;
-                case 1:
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 0:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-
+        
+        for (int team = 0; team < 4; team++) {
+            if (btnstate & btn) {
+                SetTeamState(team, newState);
+                draw++;
             }
-        } else if (alt == KS_LALT) {
-            switch(team) {
-                case 3:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 1:
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    break;
-            }
-        } else if (alt == KS_LCTRL) {
-            switch(team) {
-                case 3:
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 2:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 1:
-                    if (SetTeamState(3, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    break;
-                case 0:
-                    if (SetTeamState(2, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(1, newState)) {
-                        draw++;
-                    }
-                    if (SetTeamState(0, newState)) {
-                        draw++;
-                    }
-                    break;
-            }
+            btn = btn << 1;
         }
-        if ((newState == TEAM_DRAW) && (draw > 0)) {
+        if ((newState == TEAM_DRAW) && (draw > 0)) { //lygiosios
             PauseGame();
-            
+
             BeepThread * beep;
             if (draw > 1) {
                 beep = new BeepThread(BEEP_DRAW, 100);
-            } else {
+            } else { //lygiosios, bet tik viena komanda turejo teise spausti
                 beep = new BeepThread(BEEP_CLICK, BEEP_CLICK_LEN);
 
                 for (int i = 0; i < teamCount; i++) {
@@ -386,16 +251,15 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
                         rows[i].state = TEAM_ANSWERING;
                     }
                 }
-              
+
             }
-            
+
             if (beep->Create() == wxTHREAD_NO_ERROR) {
                 beep->Run();
             }
 
-            
+
         }
-        
     }
     UpdateTeams();
 
@@ -660,20 +524,46 @@ void PMMainFrame::SetScore(int team, int diff) {
 }
         
 void PMMainFrame::RegisterHotKeys() {
+    bool allRegistered = true;
     for (int i = 0; i < 27; i++) {
         if (this->RegisterHotKey(hotkeys[i].id, hotkeys[i].mod, hotkeys[i].keycode)) {
-            Connect(hotkeys[i].id, wxEVT_HOTKEY, wxCharEventHandler(PMMainFrame::OnHotKey));
+            Connect(hotkeys[i].id, wxEVT_HOTKEY, 
+                wxCharEventHandler(PMMainFrame::OnHotKey));
+        } else {
+            allRegistered = false;
         }
+    }
+    if (!allRegistered) {
+        wxMessageBox(wxT("Ne visos klavišų kombinacijos buvo užregistruotos. Programa gali veikti nekorektiškai."));
     }
 
 }
 
-void PMMainFrame::OnHotKey(wxKeyEvent & event) {
-    wxMessageBox(wxT("aaaaaaaaaaaa"));
-}
-
 void PMMainFrame::UnregisterHotKeys() {
+    
     for (int i = 0; i < 27; i++) {
         this->UnregisterHotKey(hotkeys[i].id);
     }
 }    
+
+void PMMainFrame::OnHotKey(wxKeyEvent & event) {
+    int id = event.GetId();
+    int kc = event.GetKeyCode();
+    int btnstate = hotkeys[id - ID_Team1].teamstats;
+    
+    if ((id >= ID_Points1) && (id <= ID_Points8)) {
+        SetScore((long)kc);
+    } else if (id == ID_StartGame) {
+        StartGame();
+    } else if (id == ID_PauseGame) {
+        PauseGame();
+    } else if (id == ID_ResetGame) {
+        ResetGame();
+    } else if (btnstate != 0) {
+        if (state != STATE_NOT_RUNNING) {
+            ProcessGameKey(btnstate);
+        }
+
+    }
+        
+}

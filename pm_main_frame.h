@@ -42,6 +42,12 @@ using namespace std;
 #define TEAM_BLOCKED 2
 #define TEAM_DRAW 3
 
+//mygtuku busenos (naudojama hotkeys)
+#define BTN_1 1
+#define BTN_2 2
+#define BTN_3 4
+#define BTN_4 8
+
 enum
 {
     ID_Quit = 1,
@@ -86,6 +92,7 @@ struct key_def {
     int id;
     int keycode;
     int mod;
+    int teamstats;
 };
 
 BEGIN_DECLARE_EVENT_TYPES()
@@ -141,9 +148,9 @@ public:
     void OnMouseEvent(wxMouseEvent& event);
     void OnTimer(wxTimerEvent& event);
     void OnBeeper(wxEvent & event);
-    virtual WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
+    //virtual WXLRESULT MSWWindowProc(WXUINT message, WXWPARAM wParam, WXLPARAM lParam);
     
-    void ProcessGameKey(long team, long alt);
+    void ProcessGameKey(int btnstate);
     void SetScore(long ch);
     void SetScore(int team, int diff);
     
