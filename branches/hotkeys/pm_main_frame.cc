@@ -14,24 +14,24 @@
 #include <ctime> 
 
 key_def hotkeys[27] = {
-    {ID_Team1, VK_F12, 0, BTN_1},
-    {ID_Team2, VK_F11, 0, BTN_2},
-    {ID_Team3, VK_F10, 0, BTN_3},
-    {ID_Team4, VK_F9, 0, BTN_4},
+    {ID_Team1, VK_NUMPAD1, 0, BTN_1},
+    {ID_Team2, VK_NUMPAD2, 0, BTN_2},
+    {ID_Team3, VK_NUMPAD3, 0, BTN_3},
+    {ID_Team4, VK_NUMPAD4, 0, BTN_4},
 
-    {ID_Team12, VK_F11, wxMOD_SHIFT, BTN_1 | BTN_2},
-    {ID_Team13, VK_F10, wxMOD_SHIFT, BTN_1 | BTN_3},
-    {ID_Team14, VK_F10, wxMOD_ALT, BTN_1 | BTN_4},
-    {ID_Team23, VK_F9, wxMOD_SHIFT, BTN_2 | BTN_3},
-    {ID_Team24, VK_F9, wxMOD_ALT, BTN_2 | BTN_4},
-    {ID_Team34, VK_F12, wxMOD_SHIFT, BTN_3 | BTN_4},
+    {ID_Team12, VK_NUMPAD1, wxMOD_CONTROL, BTN_1 | BTN_2},
+    {ID_Team13, VK_NUMPAD2, wxMOD_CONTROL, BTN_1 | BTN_3},
+    {ID_Team14, VK_NUMPAD3, wxMOD_CONTROL, BTN_1 | BTN_4},
+    {ID_Team23, VK_NUMPAD4, wxMOD_CONTROL, BTN_2 | BTN_3},
+    {ID_Team24, VK_NUMPAD5, wxMOD_CONTROL, BTN_2 | BTN_4},
+    {ID_Team34, VK_NUMPAD6, wxMOD_CONTROL, BTN_3 | BTN_4},
 
-    {ID_Team123, VK_F12, wxMOD_CONTROL, BTN_1 | BTN_2 | BTN_3},
-    {ID_Team134, VK_F10, wxMOD_CONTROL, BTN_1 | BTN_3 | BTN_4},
-    {ID_Team124, VK_F11, wxMOD_CONTROL, BTN_1 | BTN_2 | BTN_4},
-    {ID_Team234, VK_F9, wxMOD_CONTROL, BTN_2 | BTN_3 | BTN_4},
+    {ID_Team123, VK_NUMPAD1, wxMOD_ALT, BTN_1 | BTN_2 | BTN_3},
+    {ID_Team134, VK_NUMPAD2, wxMOD_ALT, BTN_1 | BTN_3 | BTN_4},
+    {ID_Team124, VK_NUMPAD3, wxMOD_ALT, BTN_1 | BTN_2 | BTN_4},
+    {ID_Team234, VK_NUMPAD4, wxMOD_ALT, BTN_2 | BTN_3 | BTN_4},
 
-    {ID_Team1234, VK_F11, wxMOD_ALT, BTN_1 | BTN_2 | BTN_3 | BTN_4},
+    {ID_Team1234, VK_NUMPAD0, 0, BTN_1 | BTN_2 | BTN_3 | BTN_4},
 
     {ID_StartGame, VK_F1, 0, 0},
     {ID_PauseGame, VK_F2, 0, 0},
@@ -232,8 +232,9 @@ void PMMainFrame::ProcessGameKey(int btnstate) {
         
         for (int team = 0; team < 4; team++) {
             if (btnstate & btn) {
-                SetTeamState(team, newState);
-                draw++;
+                if (SetTeamState(team, newState)) {
+                    draw++;
+                }
             }
             btn = btn << 1;
         }
