@@ -30,22 +30,18 @@ if ((hookActive) && nCode==HC_ACTION
         //tasku redagavimas
         if ((ch >= '1') && (ch <= '8')) {
             PostMessage(window, MSG_SCORE, (long)ch, 0);
-            return 1;
         }
     } else {
         
         switch(p->vkCode) {
             case KEY_START:
                 PostMessage(window, MSG_START, 0, 0);
-                return 1;
                 break;
             case KEY_PAUSE:
                 PostMessage(window, MSG_PAUSE, 0, 0);
-                return 1;
                 break;
             case KEY_RESET:
                 PostMessage(window, MSG_RESET, 0, 0);
-                return 1;
                 break;
             
             
