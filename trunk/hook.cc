@@ -38,12 +38,15 @@ if ((hookActive) && nCode==HC_ACTION
         switch(p->vkCode) {
             case KEY_START:
                 PostMessage(window, MSG_START, 0, 0);
+                return 1;
                 break;
             case KEY_PAUSE:
                 PostMessage(window, MSG_PAUSE, 0, 0);
+                return 1;
                 break;
             case KEY_RESET:
                 PostMessage(window, MSG_RESET, 0, 0);
+                return 1;
                 break;
             
             
@@ -57,13 +60,13 @@ if ((hookActive) && nCode==HC_ACTION
                 team = p->vkCode - VK_NUMPAD1;
                 
                 long flag = 0;
-                if (GetKeyState(VK_LCONTROL) & 0x8000) {
+                if (GetAsyncKeyState(VK_LCONTROL) & 0x8000) {
                     flag = flag | KS_LCTRL;
                 }
-                if (GetKeyState(VK_LSHIFT) & 0x8000) {
+                if (GetAsyncKeyState(VK_LSHIFT) & 0x8000) {
                     flag = flag | KS_LSHIFT;
                 }
-                if (GetKeyState(VK_LMENU) & 0x8000) {
+                if (GetAsyncKeyState(VK_LMENU) & 0x8000) {
                     flag = flag | KS_LALT;
                 }
                 PostMessage(window, MSG_GAMEKEY, team, flag);

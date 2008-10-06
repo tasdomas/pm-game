@@ -56,7 +56,7 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     
     hookActive = 1;
     
-    t.open("t.txt");
+
 
 }
 
@@ -156,7 +156,7 @@ void PMMainFrame::SetTeams (int count) {
 
 void PMMainFrame::OnQuit(wxCommandEvent& WXUNUSED(event))
 {
-    t.close();
+
     Close(TRUE);
 }
 
@@ -214,6 +214,7 @@ void PMMainFrame::ProcessGameKey(long team, long alt) {
         UpdateTeams();
         
     } else if ((alt != 0) || (team == -1)) { //lygiosios
+
         int draw = 0;
         int newState = TEAM_DRAW;
         if (state == STATE_BEEPING) {
