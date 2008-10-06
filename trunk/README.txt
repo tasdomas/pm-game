@@ -4,6 +4,13 @@
 Domas Monkus
 domas.m@gmail.com
 
+Atsisiuntimas
+=============
+Programą atsisiųsti galima iš čia:
+http://tasdomas.gamtoj.com/node/31
+arba
+http://code.google.com/p/pm-game/downloads/list
+
 Naudojimas
 ==========
 Klavišai:
@@ -18,9 +25,12 @@ g - nustatymai
 5,6 - trečios
 7,8 - ketvirtos
 
+Jeigu naudojama programa pm_game_hotkeys, taškai keičiami naudojant aukščiau nurodytas
+kombinacijas, bet laikant nuspaustą CTRL klavišą.
+
 Lygiosios: yra galimybė (nors ir nedidelė), kad komandos mygtukus paspaus vienu metu.
 Tada bus paskelbtos lygiosios. Jų atveju laikas sustabdomas, tačiau pratęsus raundą 
-(spausti F1),  lygiąsias patekusios komandos galės vėl spausti mygtukus.
+(spausti F1), į lygiąsias patekusios komandos galės vėl spausti mygtukus.
 
 Falšstartas: falšstartavusi komanda (arba komandos, jei buvo lygiosios nepasibaigus
 signalui) pažymima raudonai. Laikas nestabdomas. Tame raunde ji varžytis nebegali.
