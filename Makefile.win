@@ -1,7 +1,7 @@
 # Project: pm_game
 # Compiler: Default GCC compiler
 # Compiler Type: MingW 3
-# Makefile created by wxDev-C++ 6.10.2 on 02.10.08 14:14
+# Makefile created by wxDev-C++ 6.10.2 on 06.10.08 12:11
 
 CPP       = g++.exe
 CC        = gcc.exe
@@ -14,8 +14,8 @@ CXXINCS   = -I"C:/Program Files/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" -I"C:/Pro
 RCINCS    = --include-dir "C:/PROGRA~1/Dev-Cpp/include/common"
 BIN       = Output/pm_game.exe
 DEFINES   =  -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__ -DUNICODE=1
-CXXFLAGS  = $(CXXINCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O2
-CFLAGS    = $(INCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O2
+CXXFLAGS  = $(CXXINCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
+CFLAGS    = $(INCS) $(DEFINES) -fno-exceptions -fno-pcc-struct-return -fstrict-aliasing -Wall -D__WXMSW__ -D__GNUWIN32__ -D__WIN95__   -fexpensive-optimizations -O3
 GPROF     = gprof.exe
 RM        = rm -f
 LINK      = g++.exe
