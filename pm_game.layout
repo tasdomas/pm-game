@@ -32,9 +32,9 @@ LeftChar=1
 [Editor_4]
 Open=1
 Top=1
-CursorCol=47
-CursorRow=241
-TopLine=226
+CursorCol=1
+CursorRow=94
+TopLine=78
 LeftChar=1
 [Editor_5]
 Open=1
@@ -60,9 +60,9 @@ LeftChar=1
 [Editor_8]
 Open=1
 Top=0
-CursorCol=1
-CursorRow=5
-TopLine=1
+CursorCol=6
+CursorRow=78
+TopLine=49
 LeftChar=1
 [Editor_9]
 Open=0

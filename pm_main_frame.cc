@@ -91,6 +91,11 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     timer = new wxTimer(this, ID_Timer);
     watch = new wxStopWatch();
     
+    if ((GetKeyState(VK_NUMLOCK) & 1) == 0) {
+        wxMessageBox(wxT("NumLock turi buti ijungtas!"));
+    }
+
+    
     RegisterHotKeys();
 
 }
