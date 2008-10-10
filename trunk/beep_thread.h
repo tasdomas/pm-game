@@ -6,6 +6,8 @@
 #include "wx/thread.h"
 #include "pm_main_frame.h"
 
+#define SPS 44100
+
 class BeepThread : public wxThread {
     public:
         BeepThread(long freq, long dur);
@@ -16,6 +18,8 @@ class BeepThread : public wxThread {
         int * state;
         long frequency;
         long duration;
+        
+        char * WaveBuf;
 };           
 
 #endif

@@ -56,6 +56,9 @@ PMMainFrame::PMMainFrame(const wxString& title, const wxPoint& pos, const wxSize
     
     hookActive = 1;
     
+    if ((GetKeyState(VK_NUMLOCK) & 1) == 0) {
+        wxMessageBox(wxT("NumLock turi buti ijungtas!"));
+    }
 
 
 }
