@@ -1,7 +1,7 @@
 # Project: pm_game
 # Compiler: Default GCC compiler
 # Compiler Type: MingW 3
-# Makefile created by wxDev-C++ 6.10.2 on 06.10.08 12:11
+# Makefile created by wxDev-C++ 6.10.2 on 10.10.08 05:59
 
 CPP       = g++.exe
 CC        = gcc.exe
